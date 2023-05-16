@@ -10,7 +10,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, verbose_name='Описание')
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')
-    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='Слаг')
+    slug = models.SlugField(max_length=100, unique=True, db_index=True, blank=True, null=True, verbose_name='Слаг')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Обновлён')
     is_active = models.BooleanField(default=True, verbose_name='Активен')

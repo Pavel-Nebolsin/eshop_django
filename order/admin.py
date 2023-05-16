@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from order.models import Payment, OrderStatus, ProductInOrder, Order
+from .models import Payment, OrderStatus, ProductInOrder, Order
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -26,14 +26,6 @@ class ProductInOrderAdmin(admin.ModelAdmin):
         model = ProductInOrder
 
 admin.site.register(ProductInOrder, ProductInOrderAdmin)
-
-class OrderStatusAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in OrderStatus._meta.fields]
-
-    class Meta:
-        model = OrderStatus
-
-admin.site.register(OrderStatus, OrderStatusAdmin)
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Payment._meta.fields]

@@ -13,11 +13,11 @@ class Order(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Обновлён')
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True, default=None,
-                                verbose_name='Покупатель')
+                                verbose_name='Платёж')
     comment = models.TextField(blank=True, verbose_name='Комментарий')
 
     def __str__(self):
-        return f'Покупатель: {self.name}.Сумма: {self.amount}'
+        return f'Покупатель: {self.user.username}.Сумма: {self.amount}'
 
     class Meta:
         verbose_name = 'Заказ'
