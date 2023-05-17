@@ -19,7 +19,8 @@ class Order(models.Model):
                              verbose_name='Ключ сессии')
 
     def __str__(self):
-        return f'Покупатель: {self.user.username}.Сумма: {self.amount}'
+        user = self.user if self.user != None else f'Anonymus user with session key:{self.session_key}'
+        return f'Покупатель: {user}. Сумма: {self.amount}'
 
     class Meta:
         verbose_name = 'Заказ'

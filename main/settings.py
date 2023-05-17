@@ -53,6 +53,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'order.context_processors.cart',
             ],
         },
     },
@@ -116,3 +117,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Backend для хранения сессий
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Используйте 'django.contrib.sessions.backends.cached_db' для кэширования сеансов
+
+# Ключ сеанса
+SESSION_COOKIE_NAME = 'sessionid'  # Имя cookie для хранения сеансового ключа
+SESSION_COOKIE_AGE = 86400  # Время жизни сеансового cookie в секундах (здесь 1 день)
