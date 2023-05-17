@@ -15,6 +15,8 @@ class Order(models.Model):
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True, default=None,
                                 verbose_name='Платёж')
     comment = models.TextField(blank=True, verbose_name='Комментарий')
+    session_key = models.CharField(max_length=100, blank=True, null=True, default=None,
+                             verbose_name='Ключ сессии')
 
     def __str__(self):
         return f'Покупатель: {self.user.username}.Сумма: {self.amount}'

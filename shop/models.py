@@ -6,7 +6,7 @@ from main.utils import make_slug
 class Product(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name='Наименование')
     code = models.CharField(max_length=255, unique=True, verbose_name='Код')
-    price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='Цена')
+    price = models.DecimalField(max_digits=20, decimal_places=0, verbose_name='Цена')
     description = models.TextField(blank=True, verbose_name='Описание')
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True,
                                  verbose_name='Категория')
@@ -50,7 +50,13 @@ class ProductImage(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name='Название')
+    slug = models.SlugField(max_length=100, unique=True, db_index=True, blank=True, null=True, verbose_name='Слаг')
     description = models.TextField(blank=True, verbose_name='Описание')
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = make_slug(self.name)
+        super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name}'
@@ -58,3 +64,6 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория товаров'
         verbose_name_plural = 'Категории товаров'
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})

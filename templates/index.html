@@ -17,11 +17,10 @@
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-left">
 
             {% for item in items %}
-                {% include 'item_card.html' with item=item %}
+                    {% include 'item_card.html' with item=item %}
             {% endfor %}
 
         </div>
-    </div>
     </div>
 </section>
 {% endblock content %}
