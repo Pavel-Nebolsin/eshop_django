@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from shop.models import Product, Category
 
+
 def product_details(request, slug):
     item = Product.objects.get(slug=slug)
+
     context = {
         'item': item,
     }

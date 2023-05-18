@@ -1,11 +1,15 @@
 from django.contrib import admin
-
 from .models import Payment, OrderStatus, ProductInOrder, Order
+
+class ProductInOrderInline(admin.TabularInline):
+    model = ProductInOrder
+    extra = 0
 
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Order._meta.fields]
-
+    inlines = [ProductInOrderInline]
+    
     class Meta:
         model = Order
 

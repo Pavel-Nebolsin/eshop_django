@@ -1,10 +1,16 @@
 from .models import Order, OrderStatus
+from django.core.cache import cache
 
 
 def cart(request):
-    status = OrderStatus.objects.get(name='Корзина')
 
-    if request.user.is_authenticated:  # Проверяем, залогинен ли пользователь
+    status = cache.get('status')
+    if not status:
+        status = OrderStatus.objects.get(name='Корзина')
+        cache.set('status', status)
+
+
+    if request.user.is_authenticated:
         user = request.user
         cart, created = Order.objects.get_or_create(user=user, status=status)
 
@@ -16,5 +22,7 @@ def cart(request):
 
         cart, created = Order.objects.get_or_create(session_key=session_key, status=status)
 
-    print(cart)
-    return {'cart': cart}
+    cart_count = cart.productinorder_set.count()
+
+    return {'cart': cart, 'cart_count': cart_count}
+

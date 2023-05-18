@@ -16,7 +16,7 @@ class Order(models.Model):
                                 verbose_name='Платёж')
     comment = models.TextField(blank=True, verbose_name='Комментарий')
     session_key = models.CharField(max_length=100, blank=True, null=True, default=None,
-                             verbose_name='Ключ сессии')
+                                   verbose_name='Ключ сессии')
 
     def __str__(self):
         user = self.user if self.user != None else f'Anonymus user with session key:{self.session_key}'
@@ -40,15 +40,25 @@ class OrderStatus(models.Model):
 
 
 class ProductInOrder(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True,
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=False, blank=False,
                                 verbose_name='Товар')
     order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True,
                               verbose_name='Заказ')
-    price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='Цена')
-    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    price = models.DecimalField(max_digits=20, decimal_places=0, blank=True, null=True, default=None,
+                                verbose_name='Цена')
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
+    total_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, default=None,
+                                      verbose_name='Сумма')
+
+    def save(self, *args, **kwargs):
+        if not self.price:
+            self.price = self.product.price
+
+        self.total_price = self.price * self.quantity
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.product.name}'
+        return f'{self.product}'
 
     class Meta:
         verbose_name = 'Товар в заказе'
