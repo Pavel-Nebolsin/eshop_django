@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Корзина{% endblock title %}
+{% block content %}
+<section class="vh-100">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <p><span class="h2">Корзина</span><span class="h4"> ({{ cart_count }} товаров)</span></p>
+<!-- Список товаров - начало блока-->
+        <div class="card mb-3">
+          <div class="card-body p-3">
+<!-- заголовки таблицы -->
+            <div class="row align-items-left">
+              <div class="col-md-2">
+                <p class="small text-muted mb-4 pb-2">Изображение</p>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Название</p>
+                </div>
+              </div>
+
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Количество</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Цена</p>
+
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Сумма</p>
+                </div>
+              </div>
+            </div>
+
+<!-- заголовки таблицы (конец) -->
+{% with items=cart.productinorder_set.all %}
+{% for item in items %}
+            <div class="cart-item">
+              <div class="row align-items-center">
+              <div class="col-md-2">
+                {% with main_image=item.product.productimage_set.first %}
+                  <img src="{{ main_image.photo.url }}"
+                  class="img-fluid" alt="Изображение товара">
+                  {% endwith %}
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="lead fw-normal mb-0">{{ item.product.name }}</p>
+                </div>
+              </div>
+
+              <div class="col-md-2 d-flex justify-content-center">
+<!-- кнопки изменения количества -->
+<div class="def-number-input number-input ms-3">
+  <button type="button" onclick="updateQuantity({{ item.id }}, -1)" class="minus"></button>
+  <input class="quantity" min="1" name="quantity" value="{{ item.quantity }}" data-item="{{ item.id }}" type="number">
+  <button type="button" onclick="updateQuantity({{ item.id }}, 1)" class="plus"></button>
+</div>
+
+<!-- -->
+
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="lead fw-normal mb-0 ms-3">{{ item.price }} р.</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="lead fw-normal mb-0 total-price" id="total-price-{{ item.id }}">{{ item.total_price }} р.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+{% endfor %}
+{% endwith %}
+          </div>
+        </div>
+<!-- Список товаров - конец блока-->
+<!-- Сумма - начало блока-->
+        <div class="card mb-5">
+          <div class="card-body p-4">
+
+            <div class="float-end">
+              <p class="mb-0 me-5 d-flex align-items-center">
+                <span class="small text-muted me-2">К оплате:</span>
+                  <span class="lead fw-normal" id="cart-total-amount">{{ cart_total_amount }} р.</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+<!-- Сумма - конец блока-->
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-outline-dark flex-shrink-0 me-2">Вернуться в магазин</button>
+          <button type="button" class="btn btn-outline-dark flex-shrink-0">Перейти к оплате</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static 'js/update_quantity.js' %}"></script>
+{% endblock content %}

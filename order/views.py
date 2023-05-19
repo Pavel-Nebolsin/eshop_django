@@ -4,8 +4,8 @@ from shop.models import Product
 from .models import ProductInOrder, Order
 
 
-def order_details(request, pk):
-    return render(request, 'order_details.html', context={'pk': pk})
+def cart_view(request):
+    return render(request, 'cart_view.html')
 
 
 def add_to_cart(request):
@@ -28,7 +28,21 @@ def add_to_cart(request):
             cart_item.quantity += quantity
         cart_item.save()
         cart_count = cart.productinorder_set.count()
-        return JsonResponse({'success': True,'cart_count': cart_count })
+        return JsonResponse({'success': True, 'cart_count': cart_count})
 
     return JsonResponse({'success': False})
 
+
+def update_quantity(request):
+    if request.method == 'POST':
+        item_id = int(request.POST.get('item_id'))
+        quantity = int(request.POST.get('quantity'))
+
+        cart_item = ProductInOrder.objects.get(id=item_id)
+        cart_item.quantity = quantity
+        cart_item.save()
+        total_price = cart_item.total_price
+
+        return JsonResponse({'success': True, 'total_price': total_price, 'item_id': item_id})
+
+    return JsonResponse({'success': False})

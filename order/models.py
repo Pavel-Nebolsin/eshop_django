@@ -8,7 +8,7 @@ class Order(models.Model):
                              verbose_name='Покупатель')
     status = models.ForeignKey('OrderStatus', on_delete=models.SET_NULL, blank=True, null=True, default=None,
                                verbose_name='Статус')
-    amount = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, default=0,
+    total_amount = models.DecimalField(max_digits=20, decimal_places=0, blank=True, null=True, default=0,
                                  verbose_name='Сумма')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Обновлён')
@@ -20,7 +20,7 @@ class Order(models.Model):
 
     def __str__(self):
         user = self.user if self.user != None else f'Anonymus user with session key:{self.session_key}'
-        return f'Покупатель: {user}. Сумма: {self.amount}'
+        return f'Покупатель: {user}. Сумма: {self.total_amount}'
 
     class Meta:
         verbose_name = 'Заказ'
@@ -47,13 +47,12 @@ class ProductInOrder(models.Model):
     price = models.DecimalField(max_digits=20, decimal_places=0, blank=True, null=True, default=None,
                                 verbose_name='Цена')
     quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
-    total_price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, default=None,
+    total_price = models.DecimalField(max_digits=20, decimal_places=0, blank=True, null=True, default=None,
                                       verbose_name='Сумма')
 
     def save(self, *args, **kwargs):
         if not self.price:
             self.price = self.product.price
-
         self.total_price = self.price * self.quantity
         super().save(*args, **kwargs)
 
@@ -80,3 +79,16 @@ class Payment(models.Model):
     class Meta:
         verbose_name = 'Платёж'
         verbose_name_plural = 'Платежи'
+
+### СИГНАЛЫ ###
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+@receiver(post_save, sender=ProductInOrder)
+def update_order_total(sender, instance, **kwargs):
+    order = instance.order
+    order.total_amount = order.productinorder_set.aggregate(
+        total=models.Sum('total_price')).get('total', 0) or 0
+    order.save()
