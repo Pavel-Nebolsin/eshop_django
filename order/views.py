@@ -46,3 +46,13 @@ def update_quantity(request):
         return JsonResponse({'success': True, 'total_price': total_price, 'item_id': item_id})
 
     return JsonResponse({'success': False})
+
+def delete_cart_item(request,id):
+    if request.method == 'POST':
+        cart_item = ProductInOrder.objects.get(id=id)
+        cart_item.delete()
+
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'success': False})
+

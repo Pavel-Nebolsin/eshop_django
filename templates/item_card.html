@@ -6,15 +6,37 @@
     {% endwith %}
 
     <!-- Product details-->
-    <div class="card-body p-4">
+    <div class="card-body p-1">
         <div class="text-center">
             <!-- Product name-->
             <h5 class="fw-bolder">{{ item.name }}</h5>
-            <!-- Product price-->
+        </div>
+    </div>
+        <div class="card-body p-1">
+        <div class="text-center">
             {{item.price}} р.
         </div>
     </div>
-    <!-- Product actions-->
+
+<form method="POST" action="{% url 'add_to_cart' %}">
+    {% csrf_token %}
+     <div class="card-body p-1 d-flex justify-content-center">
+<input type="hidden" name="slug" id="slug" value="{{ item.slug }}">
+<input type="hidden" name="order_id" id="order_id" value="{{ cart.id }}">
+
+                        {% include 'number_input_component.html'%}
+    </div>
+    <div class="card-body p-4 d-flex justify-content-center position-relative">
+        <div class="message-in-item-card">Добавлено в корзину!</div>
+        <button class="btn btn-outline-dark add-to-cart-button" onclick="showMessage(this)">
+                            <i class="bi-cart-fill me-1"></i>
+                            В корзину
+                        </button>
+    </div>
+
+</form>
+
+
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
         <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{item.get_absolute_url}}">Подробности</a></div>
     </div>

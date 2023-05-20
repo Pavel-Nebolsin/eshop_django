@@ -37,12 +37,17 @@
                   <p class="small text-muted mb-4 pb-2">Сумма</p>
                 </div>
               </div>
+                <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Удалить</p>
+                </div>
+              </div>
             </div>
 
 <!-- заголовки таблицы (конец) -->
 {% with items=cart.productinorder_set.all %}
 {% for item in items %}
-            <div class="cart-item">
+            <div class="cart-item" data-item="{{ item.id }}">
               <div class="row align-items-center">
               <div class="col-md-2">
                 {% with main_image=item.product.productimage_set.first %}
@@ -60,7 +65,7 @@
 <!-- кнопки изменения количества -->
 <div class="def-number-input number-input ms-3">
   <button type="button" onclick="updateQuantity({{ item.id }}, -1)" class="minus"></button>
-  <input class="quantity" min="1" name="quantity" value="{{ item.quantity }}" data-item="{{ item.id }}" type="number">
+  <input class="quantity" min="1" name="quantity" value="{{ item.quantity }}" data-item="{{ item.id }}" type="number" readonly>
   <button type="button" onclick="updateQuantity({{ item.id }}, 1)" class="plus"></button>
 </div>
 
@@ -75,6 +80,11 @@
               <div class="col-md-2 d-flex justify-content-center">
                 <div>
                   <p class="lead fw-normal mb-0 total-price" id="total-price-{{ item.id }}">{{ item.total_price }} р.</p>
+                </div>
+              </div>
+                  <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                    <i class="btn btn-outline-dark bi bi-trash" data-item-id="{{ item.id }}"></i>
                 </div>
               </div>
             </div>
@@ -107,5 +117,5 @@
     </div>
   </div>
 </section>
-<script src="{% static 'js/update_quantity.js' %}"></script>
+<script src="{% static 'js/update_cart_items.js' %}"></script>
 {% endblock content %}

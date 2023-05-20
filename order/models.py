@@ -20,7 +20,7 @@ class Order(models.Model):
 
     def __str__(self):
         user = self.user if self.user != None else f'Anonymus user with session key:{self.session_key}'
-        return f'Покупатель: {user}. Сумма: {self.total_amount}'
+        return f'Заказ №{self.id} - {user} - Сумма: {self.total_amount}'
 
     class Meta:
         verbose_name = 'Заказ'
@@ -82,11 +82,18 @@ class Payment(models.Model):
 
 ### СИГНАЛЫ ###
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
 @receiver(post_save, sender=ProductInOrder)
+def update_order_total(sender, instance, **kwargs):
+    order = instance.order
+    order.total_amount = order.productinorder_set.aggregate(
+        total=models.Sum('total_price')).get('total', 0) or 0
+    order.save()
+
+@receiver(post_delete, sender=ProductInOrder)
 def update_order_total(sender, instance, **kwargs):
     order = instance.order
     order.total_amount = order.productinorder_set.aggregate(

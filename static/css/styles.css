@@ -10916,3 +10916,44 @@ textarea.form-control-lg {
     }
   }
 }
+
+.quantity {
+  width: 50px;
+}
+
+.small-width {
+  width: 20px;
+}
+
+#successMessage {
+    z-index: 9999;
+  }
+
+
+.message {
+  display: none;
+  background-color: #cfffc6;
+  color: #333;
+  padding: 10px;
+  position: absolute;
+  top: -4px;
+  left: 176px;
+  z-index: 9999;
+  border-radius: 5px;
+  border: 1px solid #19d51f;
+}
+.message-in-item-card {
+  display: none;
+  background-color: #cfffc6;
+  color: #333;
+  padding: 10px;
+  position: absolute;
+  top: 22px;
+  left: 45px;
+  z-index: 9999;
+  border-radius: 5px;
+  border: 1px solid #19d51f;
+}
+
+
+

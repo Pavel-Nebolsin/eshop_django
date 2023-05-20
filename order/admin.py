@@ -1,10 +1,21 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from .models import Payment, OrderStatus, ProductInOrder, Order
 
 class ProductInOrderInline(admin.TabularInline):
     model = ProductInOrder
     extra = 0
+    readonly_fields = ['display_product_image']
 
+    def display_product_image(self, obj):
+        product = obj.product
+        if product.productimage_set.exists():
+            image = product.productimage_set.first()
+            return format_html('<img src="{}" width="25%" height="25%" />', image.photo.url)
+        return '-'
+
+    display_product_image.short_description = 'Product Image'  # Заголовок столбца
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Order._meta.fields]

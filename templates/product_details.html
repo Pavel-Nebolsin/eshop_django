@@ -35,20 +35,24 @@
 <!--                    <span class="text-decoration-line-through">{{item.price}} р.</span>-->
                     <span>{{item.price}} р.</span>
                 </div>
+
                 <form id="add-to-cart-form" method="POST" action="{% url 'add_to_cart' %}">
-                    <div class="d-flex ">
-                        {% csrf_token %}
+                   {% csrf_token %}
+                    <div class="d-flex position-relative">
+
                         <input type="hidden" name="slug" id="slug" value="{{ item.slug }}">
                         <input type="hidden" name="order_id" id="order_id" value="{{ cart.id }}">
 
                         {% include 'number_input_component.html'%}
 
-                        <button class="btn btn-outline-dark flex-shrink-0 ms-4" type="submit" id="add-to-cart">
+                        <button class="btn btn-outline-dark flex-shrink-0 ms-4 add-to-cart-button" type="submit" id="add-to-cart" onclick="showMessage(this)">
                             <i class="bi-cart-fill me-1"></i>
                             Добавить в корзину
                         </button>
+                        <div class="message" id="message">Товар добавлен в корзину!</div>
                     </div>
                 </form>
+
                 <p class="lead mt-5">{{item.description}}</p>
             </div>
         </div>
@@ -163,5 +167,6 @@
         </div>
     </div>
 </section>
+
 <script src="{% static 'js/add_to_cart.js' %}"></script>
 {% endblock content %}

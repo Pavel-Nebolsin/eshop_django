@@ -23,4 +23,4 @@ def cart(request):
     cart_count = cart.productinorder_set.count()
     cart_total_amount = cart.total_amount
 
-    return {'cart': cart, 'cart_count': cart_count,'cart_total_amount': cart_total_amount}
+    return {'cart': cart, 'cart_count': cart_count, 'cart_total_amount': cart_total_amount}

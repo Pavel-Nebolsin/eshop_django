@@ -12,7 +12,18 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+function reduceCartCount() {
 
+  var cartCountElement = document.getElementById('cart-count');
+  if (cartCountElement) {
+    var currentCount = parseInt(cartCountElement.textContent);
+        if(currentCount > 0){
+      cartCountElement.textContent = currentCount - 1;
+        }
+  }
+
+
+}
 function updateCartTotalAmount() {
   var cartItems = document.querySelectorAll('.cart-item');
   var totalAmount = 0;
@@ -65,4 +76,58 @@ function updateQuantity(itemID, change) {
   }
 }
 
+// УДАЛЕНИЕ ПРОДУКТА ИЗ КОРЗИНЫ
+// Получение всех кнопок удаления
+var deleteButtons = document.querySelectorAll('.bi-trash');
 
+// Применение обработчика событий к каждой кнопке удаления
+deleteButtons.forEach(function(button) {
+  button.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    var itemId = button.getAttribute('data-item-id');
+    deleteItem(itemId);
+  });
+});
+
+// Функция для отправки запроса на удаление товара
+function deleteItem(itemId) {
+    var csrfToken = getCookie('csrftoken'); // Получение CSRF-токена
+  fetch('delete_item/' + itemId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
+    }
+  })
+    .then(response => {
+      if (response.ok) {
+        // Успешное удаление
+        // Удалить соотвествующий элемент DOM для удаленного товара
+      var cartItem = document.querySelector('.cart-item[data-item="' + itemId + '"]');
+      cartItem.remove();
+        // Обновление общей суммы корзины
+            updateCartTotalAmount()
+        // Уменьшение цифры количества товаров в корзине в навбаре
+            reduceCartCount()
+
+      } else {
+        throw new Error('Ошибка при удалении товара');
+      }
+    })
+    .catch(error => {
+      // Обработка ошибки
+    });
+}
+
+// Показ сообщения
+
+function showMessage(button) {
+
+  var message = button.closest('.d-flex').querySelector('.message');
+  message.style.display = "block";
+
+  setTimeout(function() {
+    message.style.display = "none";
+  }, 1000);
+}
