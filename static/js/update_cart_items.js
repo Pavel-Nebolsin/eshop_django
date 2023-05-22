@@ -36,6 +36,10 @@ function updateCartTotalAmount() {
 
   var cartTotalAmountElement = document.getElementById('cart-total-amount');
   cartTotalAmountElement.textContent = totalAmount + ' р.';
+
+      if(totalAmount <= 0){
+        disablePayButton();
+    }
 }
 
 function updateQuantity(itemID, change) {
@@ -93,7 +97,7 @@ deleteButtons.forEach(function(button) {
 // Функция для отправки запроса на удаление товара
 function deleteItem(itemId) {
     var csrfToken = getCookie('csrftoken'); // Получение CSRF-токена
-  fetch('delete_item/' + itemId, {
+  fetch('delete-item/' + itemId, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -120,14 +124,10 @@ function deleteItem(itemId) {
     });
 }
 
-// Показ сообщения
+function disablePayButton(){
+var orderToPayButton = document.getElementById('order-to-pay');
+        orderToPayButton.classList.add('disabled');
+        orderToPayButton.classList.add('not-allowed')
+        orderToPayButton.tabIndex = -1
 
-function showMessage(button) {
-
-  var message = button.closest('.d-flex').querySelector('.message');
-  message.style.display = "block";
-
-  setTimeout(function() {
-    message.style.display = "none";
-  }, 1000);
 }

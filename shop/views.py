@@ -14,5 +14,4 @@ def sort_by_category(request, category_slug):
     context = {
         'items': items,
     }
-
     return render(request, 'index.html', context)

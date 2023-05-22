@@ -2,23 +2,29 @@
 <div class="card h-100">
     {% with main_image=item.productimage_set.first %}
     <!-- Product image-->
-            <img class="card-img-top img-flex" src="{{ main_image.photo.url }}" alt="..."/>
+    <div class="card-img-top card-body p-1">
+            <a class="card-img-link" href="{{ item.get_absolute_url }}">
+      <img class="card-img-top img-flex" src="{{ main_image.photo.url }}">
+    </a>
+        </div>
     {% endwith %}
 
     <!-- Product details-->
     <div class="card-body p-1">
         <div class="text-center">
             <!-- Product name-->
+            <a class="custom-link" href="{{ item.get_absolute_url }}">
             <h5 class="fw-bolder">{{ item.name }}</h5>
+            </a>
         </div>
     </div>
         <div class="card-body p-1">
-        <div class="text-center">
+        <div class="text-center lead fw-normal">
             {{item.price}} р.
         </div>
     </div>
 
-<form method="POST" action="{% url 'add_to_cart' %}">
+<form method="POST" action="{% url 'add-to-cart' %}">
     {% csrf_token %}
      <div class="card-body p-1 d-flex justify-content-center">
 <input type="hidden" name="slug" id="slug" value="{{ item.slug }}">
@@ -27,7 +33,11 @@
                         {% include 'number_input_component.html'%}
     </div>
     <div class="card-body p-4 d-flex justify-content-center position-relative">
-        <div class="message-in-item-card">Добавлено в корзину!</div>
+<!--        <div class="message-in-item-card">Добавлено в корзину!</div>-->
+        <button class="btn message-in-item-card">
+                            <i class="bi-cart-fill me-1"></i>
+                            Добавлено !
+                        </button>
         <button class="btn btn-outline-dark add-to-cart-button" onclick="showMessage(this)">
                             <i class="bi-cart-fill me-1"></i>
                             В корзину
@@ -37,8 +47,8 @@
 </form>
 
 
-    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{item.get_absolute_url}}">Подробности</a></div>
-    </div>
+<!--    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">-->
+<!--        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{item.get_absolute_url}}">Подробности</a></div>-->
+<!--    </div>-->
 </div>
 </div>

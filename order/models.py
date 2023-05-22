@@ -87,15 +87,13 @@ from django.dispatch import receiver
 
 
 @receiver(post_save, sender=ProductInOrder)
-def update_order_total(sender, instance, **kwargs):
-    order = instance.order
-    order.total_amount = order.productinorder_set.aggregate(
-        total=models.Sum('total_price')).get('total', 0) or 0
-    order.save()
-
 @receiver(post_delete, sender=ProductInOrder)
 def update_order_total(sender, instance, **kwargs):
-    order = instance.order
-    order.total_amount = order.productinorder_set.aggregate(
-        total=models.Sum('total_price')).get('total', 0) or 0
-    order.save()
+    try:
+        order = instance.order
+        total = order.productinorder_set.aggregate(total=models.Sum('total_price')).get('total', 0) or 0
+        order.total_amount = total
+        order.save()
+    except Order.DoesNotExist:
+        pass
+

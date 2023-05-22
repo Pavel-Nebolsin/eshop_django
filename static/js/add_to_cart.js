@@ -36,14 +36,22 @@ buttons.forEach(function(button) {
 // Показ сообщения
 
 function showMessage(button) {
-  var message = button.closest('.d-flex').querySelector('.message');
-  if (message === null) {
-    message = button.closest('.d-flex').querySelector('.message-in-item-card');
-  }
+
+  var cart_button = document.getElementById('cart-button')
+  var message = button.closest('.d-flex').querySelector('.message-in-item-card');
+
   if (message !== null) {
+    cart_button.style.background = "#cfffc6"
+    cart_button.style.border = "1px solid #19d51f"
+
+    button.style.display = "none";
     message.style.display = "block";
+
     setTimeout(function() {
+        cart_button.style.background = "none"
+        cart_button.style.border = "1px solid black"
       message.style.display = "none";
-    }, 1000);
+      button.style.display = "block";
+    }, 700);
   }
 }

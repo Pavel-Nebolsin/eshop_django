@@ -1,7 +1,8 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from shop.models import Product
-from .models import ProductInOrder, Order
+from . import urls
+from .models import ProductInOrder, Order, OrderStatus
 
 
 def cart_view(request):
@@ -26,8 +27,10 @@ def add_to_cart(request):
             cart_item.quantity = quantity
         else:
             cart_item.quantity += quantity
+
         cart_item.save()
         cart_count = cart.productinorder_set.count()
+
         return JsonResponse({'success': True, 'cart_count': cart_count})
 
     return JsonResponse({'success': False})
@@ -47,12 +50,25 @@ def update_quantity(request):
 
     return JsonResponse({'success': False})
 
-def delete_cart_item(request,id):
+
+def delete_cart_item(request, item_id):
     if request.method == 'POST':
-        cart_item = ProductInOrder.objects.get(id=id)
+        cart_item = ProductInOrder.objects.get(id=item_id)
         cart_item.delete()
 
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False})
 
+
+def order_to_pay(request, order_id):
+    if request.user.is_authenticated:
+
+        order_to_pay = Order.objects.get(id=order_id)
+
+        if order_to_pay.productinorder_set.all().count() > 0:
+            order_to_pay.status = OrderStatus.objects.get(name="Ожидает оплаты")
+            order_to_pay.save()
+            return redirect('user-account')
+        else:
+            return redirect('cart-view')
