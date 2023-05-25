@@ -61,14 +61,13 @@ def delete_cart_item(request, item_id):
     return JsonResponse({'success': False})
 
 
-def order_to_pay(request, order_id):
+def cart_to_pay(request, order_id):
     if request.user.is_authenticated:
-
         order_to_pay = Order.objects.get(id=order_id)
+        order_to_pay.status = OrderStatus.objects.get(name="Ожидает оплаты")
+        order_to_pay.save()
+        return redirect('user-account')
 
-        if order_to_pay.productinorder_set.all().count() > 0:
-            order_to_pay.status = OrderStatus.objects.get(name="Ожидает оплаты")
-            order_to_pay.save()
-            return redirect('user-account')
-        else:
-            return redirect('cart-view')
+    return redirect('cart-view')
+
+

@@ -125,9 +125,9 @@ function deleteItem(itemId) {
 }
 
 function disablePayButton(){
-var orderToPayButton = document.getElementById('order-to-pay');
-        orderToPayButton.classList.add('disabled');
-        orderToPayButton.classList.add('not-allowed')
-        orderToPayButton.tabIndex = -1
+var cartToPayButton = document.getElementById('cart-to-pay');
+        cartToPayButton.classList.add('disabled');
+        cartToPayButton.classList.add('not-allowed')
+        cartToPayButton.tabIndex = "-1"
 
 }

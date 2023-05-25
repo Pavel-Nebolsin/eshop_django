@@ -142,7 +142,7 @@
 <!-- Сумма - конец блока-->
         <div class="d-flex justify-content-end">
           <button type="button" class="btn btn-outline-dark flex-shrink-0 me-2" onclick="goBack()">Вернуться в магазин</button>
-            <a class="btn btn-outline-dark flex-shrink-0 {% if cart_count == 0 %} disabled not-allowed" tabindex="-1" {% else %}"{% endif %} id="order-to-pay" href="{% url 'order-to-pay' order_id=cart.id %}">Перейти к оплате</a>
+            <a class="btn btn-outline-dark flex-shrink-0 {% if cart_count == 0 %} disabled not-allowed" tabindex="-1" {% else %}"{% endif %} id="cart-to-pay" href="{% url 'cart-to-pay' order_id=cart.id %}">Перейти к оплате</a>
         </div>
 
       </div>
