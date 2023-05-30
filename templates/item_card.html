@@ -27,20 +27,20 @@
 <form method="POST" action="{% url 'add-to-cart' %}">
     {% csrf_token %}
      <div class="card-body p-1 d-flex justify-content-center">
-<input type="hidden" name="slug" id="slug" value="{{ item.slug }}">
-<input type="hidden" name="order_id" id="order_id" value="{{ cart.id }}">
+<input type="hidden" name="slug" value="{{ item.slug }}">
+<input type="hidden" name="order_id"  value="{{ cart.id }}">
 
                         {% include 'number_input_component.html'%}
     </div>
     <div class="card-body p-4 d-flex justify-content-center position-relative">
 <!--        <div class="message-in-item-card">Добавлено в корзину!</div>-->
         <button class="btn message-in-item-card">
-                            <i class="bi-cart-fill me-1"></i>
-                            Добавлено !
+                            <i class="bi bi-cart-check"></i>
+                            Добавлено&nbsp;!
                         </button>
         <button class="btn btn-outline-dark add-to-cart-button" onclick="showMessage(this)">
-                            <i class="bi-cart-fill me-1"></i>
-                            В корзину
+                            <i class="bi bi-cart4"></i>
+                            В&nbsp;корзину
                         </button>
     </div>
 

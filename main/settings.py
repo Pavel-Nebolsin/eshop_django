@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-a-$oy9ixg5syk$rlaqlks$@x^&e%p=t-cp^ddf=9!b!t7kd2^+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -25,10 +25,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'authentication',
     'useraccount',
     'shop',
     'order',
+    # allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # allauth providers
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
@@ -120,8 +128,35 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Backend для хранения сессий
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Используйте 'django.contrib.sessions.backends.cached_db' для кэширования сеансов
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 'django.contrib.sessions.backends.cached_db' для кэширования сеансов
 
 # Ключ сеанса
 SESSION_COOKIE_NAME = 'sessionid'  # Имя cookie для хранения сеансового ключа
 SESSION_COOKIE_AGE = 86400  # Время жизни сеансового cookie в секундах (здесь 1 день)
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1  # for allauth
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
+LOGIN_REDIRECT_URL = 'user-account'  # redirect user after login
+SOCIALACCOUNT_ADAPTER = 'authentication.views.CustomSocialAccountAdapter'

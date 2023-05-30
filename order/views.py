@@ -64,10 +64,8 @@ def delete_cart_item(request, item_id):
 def cart_to_pay(request, order_id):
     if request.user.is_authenticated:
         order_to_pay = Order.objects.get(id=order_id)
-        order_to_pay.status = OrderStatus.objects.get(name="Ожидает оплаты")
+        order_to_pay.status_id = Order.STATUS_WAITING_FOR_PAYMENT
         order_to_pay.save()
         return redirect('user-account')
 
     return redirect('cart-view')
-
-

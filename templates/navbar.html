@@ -1,5 +1,9 @@
 {% load static %}
 {% load base_tags %}
+
+{% load socialaccount %}
+{% load account %}
+
 {% get_categories as categories %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container px-4 px-lg-5">
@@ -26,21 +30,32 @@
                     </ul>
                 </li>
                 {% if user.is_authenticated %}
+
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'user-account' %}">Личный
                     Кабинет</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">Личный
+                    Кабинет</a></li>
                 {% endif %}
-
             </ul>
 
-
             <div class="d-flex">
+                {% user_display user %}
+                {% if not user.is_authenticated %}
                 <button type="button" class="btn btn-outline-dark me-2" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
+                        data-bs-target="#LoginModal">
                     Войти
                 </button>
+                {% else %}
+                <button type="button" class="btn btn-outline-dark me-2"
+                        onclick="location.href='{% url 'logout' %}'">
+                    Выйти
+                </button>
+                {% endif %}
                 <button class="btn btn-outline-dark me-2" type="button" id="cart-button"
                         onclick="location.href='{% url 'cart-view' %}'">
-                    <i class="bi-cart-fill me-1"></i>
+                    <i class="bi bi-cart4"></i>
                     Корзина
                     <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart-count">{{ cart_count }}</span>
                 </button>
@@ -51,12 +66,11 @@
 
 <!--МОДАЛЬНОЕ ОКНО  ДЛЯ ВХОДА\РЕГИСТРАЦИИ-->
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Вход</h5>
+                <h5 class="modal-title" id="LoginModalLabel">Вход</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -66,7 +80,8 @@
                             <button type="button" class="btn btn-outline-dark p-3 form-control ">
                                 <img src="{% static '/assets/google_small.png' %}" alt="Описание изображения"
                                      class="img-fluid" style="width: 20px; height: 20px;">
-                                Войти с Google
+                                <a href="{% provider_login_url 'google' %}">Войти с Google</a>
+
                             </button>
                         </div>
                         <div class="col-6 p-1 flex">
@@ -86,20 +101,30 @@
                         <hr class="flex-grow-1">
                     </div>
                 </div>
+                <form id="loginForm" data-action-url="{% url 'account_login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="cart_id" value="{{ cart.id }}">
                     <div class="form-floating pb-2 mt-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="">
-                        <label for="floatingInput">Имя пользователя</label>
+                        <input type="text" name="login" class="form-control" id="id_login" placeholder="Логин" autocomplete="username" required="">
+                        <label for="id_login">Логин</label>
                     </div>
                     <div class="form-floating pb-2 flex-shrink-0">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                        <label for="floatingPassword">Пароль</label>
+                        <input type="password" name="password" class="form-control" id="id_password" placeholder="Пароль" autocomplete="current-password" required="">
+                        <label for="id_password">Пароль</label>
+                    </div>
+                    <div id="loginFailAlert" class="alert alert-danger d-flex align-items-center visually-hidden"
+                         role="alert" style="display: none;">
+                        <div>
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            Неправильный логин или пароль !
+                        </div>
                     </div>
                     <div class="floating pb-2">
-                        <button type="button" class="form-control btn btn-outline-dark p-3">
+                        <button type="submit" onclick="submitForm(event)" class="form-control btn btn-outline-dark p-3">
                             Войти
                         </button>
                     </div>
-
+                </form>
                 <div class="col-12 mt-2">
                     <div class="d-flex align-items-center">
                         <hr class="flex-grow-1">
@@ -112,6 +137,44 @@
                     <a class="form-control btn btn-outline-dark p-3" href="">Зарегистрировать новый аккаунт !</a>
                 </div>
 
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--Триггер успешного входа для показа сообщения-->
+{% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <script>
+            localStorage.setItem('showLoginSuccessMessage', 'true');
+        </script>
+      {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+<!--МОДАЛЬНОЕ ОКНО СООБЩЕНИЯ О ВХОДЕ-->
+<div class="modal fade" id="LoginSuccessModal" tabindex="-1" aria-labelledby="LoginSuccessModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="LoginSuccessModalLabel">Добро пожаловать!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                        <use xlink:href="#check-circle-fill"/>
+                    </svg>
+                    <div class="d-flex align-items-center">
+                        <span class="text-large lead">
+                            <i class="bi bi-person-check-fill"></i>
+                            Вы успешно вошли как {{user.username}}!
+                        </span>
+                    </div>
                 </div>
             </div>
 

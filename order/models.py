@@ -4,6 +4,11 @@ from django.db import models
 
 
 class Order(models.Model):
+
+    STATUS_CART = 1
+    STATUS_WAITING_FOR_PAYMENT = 2
+    STATUS_PAID = 3
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, default=None,
                              verbose_name='Покупатель')
     status = models.ForeignKey('OrderStatus', on_delete=models.SET_NULL, blank=True, null=True, default=None,
