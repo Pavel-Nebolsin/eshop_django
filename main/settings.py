@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # allauth providers
     'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.vk',
+    'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
@@ -103,7 +103,7 @@ else:
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -140,9 +140,8 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
-SITE_ID = 1  # for allauth
-
+### DJANGO-ALLAUTH SETTINGS ###
+SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -153,10 +152,22 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
         'OAUTH_PKCE_ENABLED': True,
+    },
+    'vk': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': False,
     }
 }
-
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
 LOGIN_REDIRECT_URL = 'user-account'  # redirect user after login
 SOCIALACCOUNT_ADAPTER = 'authentication.views.CustomSocialAccountAdapter'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'

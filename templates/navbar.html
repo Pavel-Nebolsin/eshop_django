@@ -35,7 +35,7 @@
                     Кабинет</a></li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">Личный
+                                        data-bs-target="#LoginModal">Личный
                     Кабинет</a></li>
                 {% endif %}
             </ul>
@@ -64,7 +64,7 @@
     </div>
 </nav>
 
-<!--МОДАЛЬНОЕ ОКНО  ДЛЯ ВХОДА\РЕГИСТРАЦИИ-->
+<!--МОДАЛЬНОЕ ОКНО ДЛЯ ВХОДА -->
 
 <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -77,16 +77,17 @@
                 <div class="social-auth p-2">
                     <div class="row">
                         <div class="col-6 p-1 flex">
-                            <button type="button" class="btn btn-outline-dark p-3 form-control ">
-                                <img src="{% static '/assets/google_small.png' %}" alt="Описание изображения"
+                            <button type="button" class="btn btn-outline-dark p-3 form-control "
+                                    onclick="location.href='{% provider_login_url 'google' %}'">
+                                <img src="{% static '/assets/google_small.png' %}" alt="Google"
                                      class="img-fluid" style="width: 20px; height: 20px;">
-                                <a href="{% provider_login_url 'google' %}">Войти с Google</a>
-
+                                Войти с Google
                             </button>
                         </div>
                         <div class="col-6 p-1 flex">
-                            <button type="button" class="btn btn-outline-dark p-3 form-control">
-                                <img src="{% static '/assets/vk_small.png' %}" alt="Описание изображения"
+                            <button type="button" class="btn btn-outline-dark p-3 form-control"
+                                    onclick="location.href='{% provider_login_url 'vk' %}'">
+                                <img src="{% static '/assets/vk_small.png' %}" alt="VKontakte"
                                      class="img-fluid" style="width: 20px; height: 20px;">
                                 Войти с VKontakte
                             </button>
@@ -103,13 +104,14 @@
                 </div>
                 <form id="loginForm" data-action-url="{% url 'account_login' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="cart_id" value="{{ cart.id }}">
                     <div class="form-floating pb-2 mt-3">
-                        <input type="text" name="login" class="form-control" id="id_login" placeholder="Логин" autocomplete="username" required="">
+                        <input type="text" name="login" class="form-control" id="id_login" placeholder="Логин"
+                               autocomplete="username" required="">
                         <label for="id_login">Логин</label>
                     </div>
                     <div class="form-floating pb-2 flex-shrink-0">
-                        <input type="password" name="password" class="form-control" id="id_password" placeholder="Пароль" autocomplete="current-password" required="">
+                        <input type="password" name="password" class="form-control" id="id_password"
+                               placeholder="Пароль" autocomplete="current-password" required="">
                         <label for="id_password">Пароль</label>
                     </div>
                     <div id="loginFailAlert" class="alert alert-danger d-flex align-items-center visually-hidden"
@@ -120,7 +122,8 @@
                         </div>
                     </div>
                     <div class="floating pb-2">
-                        <button type="submit" onclick="submitForm(event)" class="form-control btn btn-outline-dark p-3">
+                        <button type="submit" onclick="submitLoginForm(event)"
+                                class="form-control btn btn-outline-dark p-3">
                             Войти
                         </button>
                     </div>
@@ -134,8 +137,81 @@
                 </div>
 
                 <div class="col-12 text-center mt-3">
-                    <a class="form-control btn btn-outline-dark p-3" href="">Зарегистрировать новый аккаунт !</a>
+                    <a class="form-control btn btn-outline-dark p-3" href="" data-bs-toggle="modal"
+                       data-bs-target="#SignUpModal">Зарегистрировать новый аккаунт !</a>
+
                 </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--МОДАЛЬНОЕ ОКНО ДЛЯ РЕГИСТРАЦИИ НОВОГО АККАУНТА-->
+
+<div class="modal fade" id="SignUpModal" tabindex="-1" aria-labelledby="SignUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn" data-bs-toggle="modal"
+                        data-bs-target="#LoginModal">
+                    <i class="bi bi-arrow-left lead"></i></button>
+                <h5 class="modal-title ms-3" id="SignUpModalLabel">Регистрация нового аккаунта</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="signup_form" data-action-url="{% url 'account_signup' %}">
+                    {% csrf_token %}
+                    <div class="form-floating pb-2 mt-3">
+                        <input type="text" name="username" class="form-control" id="id_username"
+                               placeholder="Логин"
+                               autocomplete="username" minlength="1" maxlength="150" required="Обязательно">
+                        <label for="id_username">Логин</label>
+                        <div class="invalid-feedback">
+                            Контейнер для сообщения
+                        </div>
+
+                    </div>
+                    <div class="form-floating pb-2">
+                        <input type="email" name="email" class="form-control" id="id_email" placeholder="Ваш E-mail"
+                               autocomplete="email" required="">
+                        <label for="id_email">E-mail</label>
+                        <div class="invalid-feedback">
+                            Контейнер для сообщения
+                        </div>
+                    </div>
+                    <div class="form-floating pb-2">
+                        <input type="password" name="password1" class="form-control" id="id_password1"
+                               placeholder="Пароль" autocomplete="new-password" required="">
+                        <label for="id_password1">Пароль</label>
+                        <div class="invalid-feedback">
+                            Контейнер для сообщения
+                        </div>
+                    </div>
+                    <div class="form-floating pb-2">
+                        <input type="password" name="password2" class="form-control" id="id_password2"
+                               placeholder="Пароль ещё раз" autocomplete="new-password" required="">
+                        <label for="id_password2">Пароль ещё раз</label>
+                        <div class="invalid-feedback">
+                            Контейнер для сообщения
+                        </div>
+                    </div>
+                    <div id="signUpFailAlert" class="alert alert-danger d-flex align-items-center visually-hidden"
+                         role="alert" style="display: none;">
+                        <div>
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            Форма заполнена не правильно!
+                        </div>
+                    </div>
+                    <div class="floating pb-2 mt-3">
+                        <button type="submit" onclick="submitSignUpForm(event)"
+                                class="form-control btn btn-outline-dark p-3">
+                            Зарегистрировать!
+                        </button>
+                    </div>
+                </form>
 
             </div>
         </div>
@@ -145,13 +221,16 @@
 
 <!--Триггер успешного входа для показа сообщения-->
 {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == 'success' %}
-        <script>
+{% for message in messages %}
+{% if message.tags == 'success' %}
+<script>
             localStorage.setItem('showLoginSuccessMessage', 'true');
-        </script>
-      {% endif %}
-    {% endfor %}
+
+
+
+</script>
+{% endif %}
+{% endfor %}
 {% endif %}
 
 
