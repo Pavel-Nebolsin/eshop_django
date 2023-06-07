@@ -220,18 +220,15 @@
 
 <!--Триггер успешного входа для показа сообщения-->
 {% if messages %}
-{% for message in messages %}
-{% if message.tags == 'success' %}
-<script>
-            localStorage.setItem('showLoginSuccessMessage', 'true');
-
-
-
-
-</script>
+    {% for message in messages %}
+        {% if message.message == "Successful login" %}
+            <script>
+                localStorage.setItem('showLoginSuccessMessage', 'true');
+            </script>
+        {% endif %}
+    {% endfor %}
 {% endif %}
-{% endfor %}
-{% endif %}
+
 
 
 <!--МОДАЛЬНОЕ ОКНО СООБЩЕНИЯ О ВХОДЕ-->
@@ -260,3 +257,4 @@
         </div>
     </div>
 </div>
+

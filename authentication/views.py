@@ -8,21 +8,24 @@ from django.contrib import messages
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from order.models import Order
-from allauth.account.views import LoginView, SignupView
+from allauth.account.views import LoginView, SignupView, ConfirmEmailView
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 
 def register_view(request):
     pass
 
+
 def logout_view(request):
     logout(request)
     return redirect('index')
+
 
 class CustomLoginView(LoginView):
     # переопределение метода allauth для перерегистрации текущей корзины
     # на авторизованного пользователя
     def form_valid(self, form):
+
         success_url = self.get_success_url()
         try:
             cart_id = self.request.session.get('cart_id')
@@ -34,10 +37,10 @@ class CustomLoginView(LoginView):
             return e.response
 
     def dispatch(self, request, *args, **kwargs):
-        if request.method != 'POST':
-            raise Http404('Page not found')
-        return super().dispatch(request, *args, **kwargs)
+        if request.user.is_authenticated or request.method != 'POST':
 
+            return redirect('index')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CustomSignUpView(SignupView):
@@ -66,6 +69,11 @@ class CustomSignUpView(SignupView):
     def form_invalid(self, form):
         errors = {field.name: field.errors for field in form}
         return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method != 'POST':
+            raise Http404('Page not found')
+        return super().dispatch(request, *args, **kwargs)
 
 
 #
@@ -114,6 +122,27 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         # аккаунту ещё одну соц сеть
         cart_id = self.request.session.get('cart_id')
         set_cart_to_user(cart_id, user)
+
+
+class CustomConfirmEmailView(ConfirmEmailView):
+    def get(self, *args, **kwargs):
+        key = kwargs.get('key')
+        if not key:
+            raise Http404("Page not found")
+        return super().get(*args, **kwargs)
+
+def email_confirm_view(request, user_id):
+    if request.method == 'POST':
+        email = EmailAddress.objects.filter(user_id=user_id).first()
+        print(user_id, email)
+        if email:
+            email.send_confirmation()
+            return JsonResponse({'success': True}, status=200)
+        else:
+            return JsonResponse({'success': False, 'errors': 'E-mail not found'}, status=400)
+    else:
+        raise Http404("Page not found")
+
 
 def set_cart_to_user(cart_id, user):
     cart = Order.objects.get(id=cart_id)

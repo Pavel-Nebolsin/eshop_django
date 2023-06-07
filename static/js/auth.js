@@ -24,7 +24,8 @@ function submitLoginForm(event) {
 
       } else {
         // Обработка ошибки
-        throw new Error('Network response was not ok.');
+        window.location.href = '/';
+
       }
     })
 
@@ -93,3 +94,4 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('showLoginSuccessMessage', 'false');
   }
 });
+

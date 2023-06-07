@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 from . import settings
 from .views import *
-from authentication.views import CustomLoginView, CustomSignUpView
+from authentication.views import CustomLoginView, CustomSignUpView, CustomConfirmEmailView
 
 urlpatterns = [
     path('', index, name='index'),
@@ -15,6 +15,7 @@ urlpatterns = [
     # allauth urls
     path('accounts/login/', CustomLoginView.as_view(), name='account_login'),
     path('accounts/signup/', CustomSignUpView.as_view(), name='account_signup'),
+    path('accounts/confirm-email/<str:key>/', CustomConfirmEmailView.as_view(), name='account_confirm_email'),
     path('accounts/', include('allauth.urls')),
 ]
 

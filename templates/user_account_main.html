@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Страница товара {{item.name}} {% endblock title %}
+{% block title %}Страница пользователя {{user.username}} {% endblock title %}
 {% block content %}
+<script src="https://api-maps.yandex.ru/2.1/?apikey=95255c03-0cbc-4069-89e1-d1fd49ca74da&lang=ru_RU" type="text/javascript"></script>
 <!-- Product section-->
 <section class="py-5">
     <div class="container px-5 px-lg-12 my-5">
@@ -38,6 +39,15 @@
 
                                 </div>
                                 <div class="col">
+
+                                    {% if messages %}
+{% for message in messages %}
+      {{message}}
+{% endfor %}
+
+{% endif %}
+
+
                                     <h3 class="">Логин: {{user.username}}</h3>
                                     <button type="button" class="btn btn-outline-dark me-2"
                                             onclick="location.href='{% url 'logout' %}'">
@@ -78,10 +88,20 @@
                                            class="label small text-muted mt-3">E-mail:</label>
                                     <div class="input-group">
                                         {{ form.email }}
-                                        <button class="btn btn-outline-dark" type="button" id="email-confirm-button">
+                                        {% with email=user.emailaddress_set.first %}
+                                        <button class="btn btn-outline-dark" type="button"
+                                                id="emailConfirmButton" data-action-url="{% url 'email-confirm' user_id=user.id %}"
+                                        {% if email.verified %} disabled
+                                            >
                                             <i class="bi bi-check-square"></i>
-                                            <span class="small">Подтвердить</span>
+                                            <span class="small">Подтверждён
+                                        {% else %}
+                                            >
+                                            <i class="bi bi-envelope"></i>
+                                            <span class="small">
+                                                Подтвердить{% endif %}</span>
                                         </button>
+
                                     </div>
                                         <div class="p-0 invalid-msg small">
                                             {% for error in form.email.errors %}
@@ -93,8 +113,8 @@
                                     <div class="input-group">
                                         {{ form.phone_number }}
                                         <button class="btn btn-outline-dark" type="button"
-                                                id="phone-number-confirm-button">
-                                            <i class="bi bi-check-square"></i>
+                                                id="phoneNumberConfirmButton">
+                                            <i class="bi bi-envelope"></i>
                                             <span class="small">Подтвердить</span>
                                         </button>
                                     </div>
@@ -123,6 +143,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                         Сохранить
                                     </button>
+                                    {{email}}
                                 </div>
 
                             </form>
@@ -140,11 +161,46 @@
         </div>
     </div>
 </section>
+<!--МОДАЛЬНОЕ ОКНО СООБЩЕНИЯ О ВХОДЕ-->
+<div class="modal fade" id="EmailConfirmedModal" tabindex="-1" aria-labelledby="EmailConfirmedModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EmailConfirmedModalLabel">Отлично!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                        <use xlink:href="#check-circle-fill"/>
+                    </svg>
+                    <div class="d-flex align-items-center">
+                        <span class="text-large lead">
+                            <i class="bi bi-envelope"></i>
+                            E-mail: {{email}}<br>успешно подтверждён!
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% if messages %}
+  {% for message in messages %}
+    {% if 'подтверждён' in message.message %}
+      <script>
+          localStorage.setItem('showEmailConfirmedMessage', 'true');
+      </script>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% endwith %}
 <script src="{% static '/js/profile.js' %}"></script>
 {% if form.errors %}
-    <script>
-        editForm();
-    </script>
+  <script>
+    editForm();
+  </script>
 {% endif %}
-
 {% endblock content %}

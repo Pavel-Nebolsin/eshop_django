@@ -1,7 +1,9 @@
+from allauth.account.models import EmailAddress
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import ProfileForm
 
-
+@login_required
 def user_account_view(request):
     initial_data = {
         'first_name': request.user.first_name,
