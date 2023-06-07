@@ -4,38 +4,147 @@
 {% block content %}
 <!-- Product section-->
 <section class="py-5">
-    <div class="container px-4 px-lg-5 my-5">
+    <div class="container px-5 px-lg-12 my-5">
         <div>
-            <h1 class="display-5 fw-bolder">Личный кабинет покупателя {{ user.username }}</h1>
+            <h1 class="display-5 fw-bolder">Личный кабинет покупателя</h1>
 
             <div class="container mt-5">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="#">Активная</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                           aria-expanded="false">Выпадающий список</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Действие</a></li>
-                            <li><a class="dropdown-item" href="#">Другое действие</a></li>
-                            <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Отделенная ссылка</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ссылка</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active">Отключенная</a>
-                    </li>
-                </ul>
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-user-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-user-profile" type="button" role="tab"
+                                aria-controls="nav-user-profile"
+                                aria-selected="true">Профиль
+                        </button>
+                        <button class="nav-link" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders"
+                                type="button" role="tab" aria-controls="nav-orders" aria-selected="false">Заказы
+                        </button>
+                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Контакт
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- ПРОФИЛЬ -->
+                    <div class="tab-pane mt-3 fade show active" id="nav-user-profile" role="tabpanel"
+                         aria-labelledby="nav-user-profile-tab">
+
+                        <div class="container mt-5">
+                            <div class="row row-cols-auto">
+                                <div class="col">
+
+                                    <img class="img-thumbnail img-flex"
+                                         src="{{ user.profile.image.url }}" style="max-width: 160px; height: auto;">
+
+                                </div>
+                                <div class="col">
+                                    <h3 class="">Логин: {{user.username}}</h3>
+                                    <button type="button" class="btn btn-outline-dark me-2"
+                                            onclick="location.href='{% url 'logout' %}'">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Сменить пароль
+                                    </button>
+                                    <button type="button" class="btn btn-outline-dark me-2"
+                                            onclick="location.href='{% url 'logout' %}'">
+                                        <i class="bi bi-box-arrow-left"></i>
+                                        Выйти
+                                    </button>
+                                </div>
+                            </div>
+                            <form action="{% url 'user-account' %}" method="post" id="profileForm">
+
+                                {% csrf_token %}
+                                <div class="card mt-2 p-2 col col-lg-6">
+                                    <label for="{{ form.first_name.id_for_label }}"
+                                           class="label small text-muted mt-1">Имя:</label>
+                                    <div class="input-group">
+                                        {{ form.first_name }}
+                                    </div>
+                                    <div class="p-0 invalid-msg small">
+                                            {% for error in form.first_name.errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </div>
+                                    <label for="{{ form.last_name.id_for_label }}" class="label small text-muted mt-3">Фамилия:</label>
+                                    <div class="input-group">
+                                        {{ form.last_name }}
+                                    </div>
+                                    <div class="p-0 invalid-msg small">
+                                            {% for error in form.last_name.errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </div>
+                                    <label for="{{ form.email.id_for_label }}"
+                                           class="label small text-muted mt-3">E-mail:</label>
+                                    <div class="input-group">
+                                        {{ form.email }}
+                                        <button class="btn btn-outline-dark" type="button" id="email-confirm-button">
+                                            <i class="bi bi-check-square"></i>
+                                            <span class="small">Подтвердить</span>
+                                        </button>
+                                    </div>
+                                        <div class="p-0 invalid-msg small">
+                                            {% for error in form.email.errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </div>
+                                    <label for="{{ form.phone_number.id_for_label }}"
+                                           class="label small text-muted mt-3">Телефон:</label>
+                                    <div class="input-group">
+                                        {{ form.phone_number }}
+                                        <button class="btn btn-outline-dark" type="button"
+                                                id="phone-number-confirm-button">
+                                            <i class="bi bi-check-square"></i>
+                                            <span class="small">Подтвердить</span>
+                                        </button>
+                                    </div>
+                                        <div class="p-0 invalid-msg small">
+                                            {% for error in form.phone_number.errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </div>
+                                    <label for="{{ form.address.id_for_label }}"
+                                           class="label small text-muted mt-3">Адрес:</label>
+                                    <div class="input-group">
+                                        {{ form.address }}
+                                    </div>
+                                        <div class="p-0 invalid-msg small mb-3">
+                                            {% for error in form.address.errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </div>
+                                </div>
+                                <div class="mt-2 p-2 col col-lg-6">
+                                    <button class="btn btn-outline-dark form-control" type="button" onclick="editForm();" id="editProfileButton">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Изменить
+                                    </button>
+                                    <button type="submit" class="btn btn-outline-dark form-control" id="saveProfileButton" style="display: none;">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Сохранить
+                                    </button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- ЗАКАЗЫ -->
+                    <div class="tab-pane fade" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">...
+                    </div>
+                    <!-- КОНТАКТ -->
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+<script src="{% static '/js/profile.js' %}"></script>
+{% if form.errors %}
+    <script>
+        editForm();
+    </script>
+{% endif %}
 
 {% endblock content %}

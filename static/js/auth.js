@@ -47,13 +47,8 @@ function submitSignUpForm(event) {
       // Перенаправление произошло, значит успешная регистрация
       localStorage.setItem('showLoginSuccessMessage', 'true');
       location.reload();
-
     } else if (response.ok) {
       // Перенаправление не произошло, значит форма не прошла валидацию
-      // Вывести сообщение в форму
-      var loginFailAlert = document.getElementById('signUpFailAlert');
-      loginFailAlert.classList.remove('visually-hidden');
-
     } else if (response.status === 400) {
       // Ответ с ошибкой валидации формы
       return response.json();
@@ -80,7 +75,6 @@ function submitSignUpForm(event) {
         errorContainer.textContent = errorMessages.join(', ');
       }
     });
-
 
     }
   })

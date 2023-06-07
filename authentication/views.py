@@ -1,10 +1,11 @@
 from allauth.account.adapter import get_adapter
 from allauth.account import app_settings
+from allauth.account.models import EmailAddress
 from allauth.account.utils import complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from order.models import Order
 from allauth.account.views import LoginView, SignupView
@@ -14,27 +15,9 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 def register_view(request):
     pass
 
-
 def logout_view(request):
     logout(request)
     return redirect('index')
-
-
-def set_cart_to_user(cart_id, user):
-    cart = Order.objects.get(id=cart_id)
-    if cart.productinorder_set.count() > 0:
-
-        old_user_cart = Order.objects.filter(user=user, status_id=Order.STATUS_CART).first()
-        if old_user_cart:
-            old_user_cart.delete()
-
-        cart.user = user
-        cart.session_key = None
-        cart.save()
-
-    else:
-        cart.delete()
-
 
 class CustomLoginView(LoginView):
     # переопределение метода allauth для перерегистрации текущей корзины
@@ -49,6 +32,12 @@ class CustomLoginView(LoginView):
             return form.login(self.request, redirect_url=success_url)
         except ImmediateHttpResponse as e:
             return e.response
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method != 'POST':
+            raise Http404('Page not found')
+        return super().dispatch(request, *args, **kwargs)
+
 
 
 class CustomSignUpView(SignupView):
@@ -78,6 +67,7 @@ class CustomSignUpView(SignupView):
         errors = {field.name: field.errors for field in form}
         return JsonResponse({'success': False, 'errors': errors}, status=400)
 
+
 #
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     # переопределение метода allauth(social accounts) для перерегистрации
@@ -87,7 +77,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().save_user(request, sociallogin, form)
         # регистрируем корзину на нового пользователя
         cart_id = self.request.session.get('cart_id')
-        print("save_user", cart_id, user)
         set_cart_to_user(cart_id, user)
         messages.success(request, 'Successful login')  # Добавляем в сессию сообщение об успешном входе
         return user
@@ -97,8 +86,46 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
         if sociallogin.is_existing:
             user = sociallogin.user
+            # регистрируем корзину на вошедшего пользователя
             cart_id = self.request.session.get('cart_id')
-            print("pre_social_login", cart_id, user)
-            # регистрируем корзину на нового пользователя
             set_cart_to_user(cart_id, user)
             messages.success(request, 'Successful login')  # Добавляем в сессию сообщение об успешном входе
+            return
+
+        # здесь я внедрил решение, позволяющее зарегистрировать на уже существующий аккаунт
+        # ещё одну соц сеть с ТЕМ ЖЕ имэйлом
+        if 'email' not in sociallogin.account.extra_data:
+            return
+
+        # check if given email address already exists.
+        # Note: __iexact is used to ignore cases
+        try:
+            email = sociallogin.account.extra_data['email'].lower()
+            email_address = EmailAddress.objects.get(email__iexact=email)
+
+        # if it does not, let allauth take care of this new social account
+        except EmailAddress.DoesNotExist:
+            return
+
+        # if it does, connect this new social login to the existing user
+        user = email_address.user
+        sociallogin.connect(request, user)
+        # регистрируем корзину на пользователя подключившего к
+        # аккаунту ещё одну соц сеть
+        cart_id = self.request.session.get('cart_id')
+        set_cart_to_user(cart_id, user)
+
+def set_cart_to_user(cart_id, user):
+    cart = Order.objects.get(id=cart_id)
+    if cart.productinorder_set.count() > 0:
+
+        old_user_cart = Order.objects.filter(user=user, status_id=Order.STATUS_CART).first()
+        if old_user_cart:
+            old_user_cart.delete()
+
+        cart.user = user
+        cart.session_key = None
+        cart.save()
+
+    else:
+        cart.delete()

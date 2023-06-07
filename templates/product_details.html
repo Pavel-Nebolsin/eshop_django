@@ -12,7 +12,7 @@
                     <div class="carousel-inner">
                         {% for image in item.productimage_set.all %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <img class="d-block w-100" src="{{ image.photo.url }}">
+                            <img class="d-block" src="{{ image.photo.url }}">
                         </div>
                         {% endfor %}
                     </div>
@@ -57,8 +57,8 @@
                     </div>
                 </form>
 
-                <p class="lead mt-5">{{item.description}}</p>
             </div>
+            <p class="lead mt-5">{{item.description}}</p>
         </div>
     </div>
 </section>

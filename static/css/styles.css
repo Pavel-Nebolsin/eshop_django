@@ -10977,3 +10977,18 @@ html, body {
 
 }
 
+.address-input {
+  resize: none;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.invalid-msg{
+  color: #dc3545;
+}
+
+input[disabled], textarea[disabled] {
+  background-color: #f8f9fa !important;
+  border: 0px solid !important;
+
+}

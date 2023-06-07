@@ -128,7 +128,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Backend для хранения сессий
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 'django.contrib.sessions.backends.cached_db' для кэширования сеансов
+# 'django.contrib.sessions.backends.cached_db' для кэширования сеансов
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Ключ сеанса
 SESSION_COOKIE_NAME = 'sessionid'  # Имя cookie для хранения сеансового ключа
@@ -171,3 +172,19 @@ SOCIALACCOUNT_ADAPTER = 'authentication.views.CustomSocialAccountAdapter'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'user-account'
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+### EMAIL SENDING SETTINGS ###
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "ldrimanez@gmail.com"
+EMAIL_HOST_PASSWORD = "avlwuzgxusbxsgol"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
