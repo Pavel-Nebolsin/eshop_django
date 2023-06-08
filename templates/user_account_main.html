@@ -7,7 +7,7 @@
 <section class="py-5">
     <div class="container px-5 px-lg-12 my-5">
         <div>
-            <h1 class="display-5 fw-bolder">Личный кабинет покупателя</h1>
+            <h1 class="display-5 fw-bolder">Личный кабинет</h1>
 
             <div class="container mt-5">
                 <nav>
@@ -15,9 +15,10 @@
                         <button class="nav-link active" id="nav-user-profile-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-user-profile" type="button" role="tab"
                                 aria-controls="nav-user-profile"
-                                aria-selected="true">Профиль
+                                aria-selected="true"
+                                onclick="location.href='{% url 'user-account' %}'">Профиль
                         </button>
-                        <button class="nav-link" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders"
+                        <button onclick="location.href='{% url 'user-account-orders' %}'" class="nav-link" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders"
                                 type="button" role="tab" aria-controls="nav-orders" aria-selected="false">Заказы
                         </button>
                         <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
@@ -39,14 +40,6 @@
 
                                 </div>
                                 <div class="col">
-
-                                    {% if messages %}
-{% for message in messages %}
-      {{message}}
-{% endfor %}
-
-{% endif %}
-
 
                                     <h3 class="">Логин: {{user.username}}</h3>
                                     <button type="button" class="btn btn-outline-dark me-2"
@@ -143,7 +136,6 @@
                                         <i class="bi bi-pencil-square"></i>
                                         Сохранить
                                     </button>
-                                    {{email}}
                                 </div>
 
                             </form>
@@ -161,7 +153,8 @@
         </div>
     </div>
 </section>
-<!--МОДАЛЬНОЕ ОКНО СООБЩЕНИЯ О ВХОДЕ-->
+
+<!--МОДАЛЬНОЕ ОКНО СООБЩЕНИЯ О ПОДТВЕРЖДЕНИИ ИМЭЙЛА-->
 <div class="modal fade" id="EmailConfirmedModal" tabindex="-1" aria-labelledby="EmailConfirmedModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">

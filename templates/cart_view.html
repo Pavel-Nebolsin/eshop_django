@@ -3,151 +3,170 @@
 {% block title %}Корзина{% endblock title %}
 {% block content %}
 <section class="py-5">
-  <div class="container h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
 
 
-          <div class="card mb-3">
-          <div class="card-body p-4">
+                <div class="card mb-3">
+                    <div class="card-body p-4">
 
-            <div class="float-start">
-              <p class="mb-0 me-0 d-flex align-items-center">
-                <p><span class="h2">Корзина</span></p>
-              </p>
+                        <div class="float-start">
+                            <p class="mb-0 me-0 d-flex align-items-center">
+                            <p><span class="h2">Корзина</span></p>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Список товаров - начало блока-->
+                <div class="card mb-3">
+                    <div class="card-body p-3">
+                        <!-- заголовки таблицы -->
+                        <div class="d-none d-sm-none d-md-block">
+                            <div class="row align-items-left">
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <p class="small text-muted mb-4 pb-2">Изображение</p>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <p class="small text-muted mb-4 pb-2">Название</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <p class="small text-muted mb-4 pb-2">Количество</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <p class="small text-muted mb-4 pb-2">Цена</p>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <p class="small text-muted mb-4 pb-2">Сумма</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <p class="small text-muted mb-4 pb-2">Удалить</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- заголовки таблицы (конец) -->
+                        {% with items=cart.productinorder_set.all %}
+                        {% for item in items %}
+                        <div class="cart-item" data-item="{{ item.id }}">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    {% with main_image=item.product.productimage_set.first %}
+                                    <div class="card-img-top card-body p-1">
+                                        <a class="card-img-link"
+                                           href="{{ item.product.get_absolute_url }}">
+                                            <img class="card-img-top img-flex"
+                                                 src="{{ main_image.photo.url }}">
+                                        </a>
+                                    </div>
+                                    {% endwith %}
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center d-md-none d-lg-block">
+                                    <a class="custom-link"
+                                       href="{{ item.product.get_absolute_url }}">
+                                        <h5 class="fw-bolder">{{ item.product.name }}</h5>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center d-none d-sm-none d-md-block d-lg-none">
+                                    <a class="custom-link"
+                                       href="{{ item.product.get_absolute_url }}">
+                                        <p class="">{{ item.product.name }}</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <!-- кнопки изменения количества -->
+
+                                    <div class="def-number-input number-input mt-4 mb-4">
+
+                                        <button type="button"
+                                                onclick="url = '{% url 'update-quantity' %}';updateQuantity({{ item.id }}, -1,url)"
+                                                class="minus"></button>
+                                        <input class="quantity" min="1" name="quantity"
+                                               value="{{ item.quantity }}"
+                                               data-item="{{ item.id }}" type="number" readonly>
+                                        <button type="button"
+                                                onclick="url = '{% url 'update-quantity' %}'; updateQuantity({{ item.id }}, 1,url)"
+                                                class="plus"></button>
+                                    </div>
+
+                                    <!-- -->
+
+                                </div>
+
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Цена:</span>
+                                    <div>
+                                        <p class="lead text-md fw-normal ms-2">{{ item.price }}
+                                            р.</p>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Сумма:</span>
+                                    <div style="display: flex;">
+                                        <p class="lead text-md fw-normal ms-2 total-price"
+                                           id="total-price-{{ item.id }}">
+                                            {{ item.total_price }}</p><span class="lead fw-normal" >&nbsp;р.</span>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex justify-content-center">
+                                    <div>
+                                        <i class="btn btn-outline-dark bi bi-trash"
+                                           data-item-id="{{ item.id }}"
+                                           data-action-url="{% url 'delete-item' item_id=item.id %}"
+                                           data-is-cart="true"></i>
+                                        <span class="small text-muted mb-4 pb-2 d-block d-sm-block d-md-none">Удалить</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <!-- Список товаров - конец блока-->
+                <!-- Сумма - начало блока-->
+                <div class="card mb-5">
+                    <div class="card-body p-4">
+
+                        <div class="float-end">
+                            <p class="mb-0 me-5 d-flex align-items-center">
+                                <span class="small text-muted me-2">К оплате:</span>
+                                <span class="lead fw-normal" id="order-total-amount">{{ cart.total_amount }}</span>
+                                <span class="lead fw-normal" >&nbsp;р.</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Сумма - конец блока-->
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-dark flex-shrink-0 me-2" onclick="goBack()">Вернуться
+                    </button>
+                    <a class="btn btn-outline-dark flex-shrink-0 {% if cart_count == 0 %} disabled not-allowed"
+                       tabindex="-1" {% else %}"{% endif %} id="cart-to-pay" href="{% url 'cart-to-pay' order_id=cart.id %}">Перейти к оплате</a>
+                </div>
+
             </div>
-
-          </div>
         </div>
-<!-- Список товаров - начало блока-->
-        <div class="card mb-3">
-          <div class="card-body p-3">
-<!-- заголовки таблицы -->
-          <div class="d-none d-sm-none d-md-block">
-            <div class="row align-items-left">
-              <div class="col-md-2 d-flex justify-content-center">
-                <p class="small text-muted mb-4 pb-2">Изображение</p>
-              </div>
-              <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                  <p class="small text-muted mb-4 pb-2">Название</p>
-                </div>
-              </div>
-
-              <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                  <p class="small text-muted mb-4 pb-2">Количество</p>
-                </div>
-              </div>
-              <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                  <p class="small text-muted mb-4 pb-2">Цена</p>
-
-                </div>
-              </div>
-              <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                  <p class="small text-muted mb-4 pb-2">Сумма</p>
-                </div>
-              </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                  <p class="small text-muted mb-4 pb-2">Удалить</p>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-<!-- заголовки таблицы (конец) -->
-{% with items=cart.productinorder_set.all %}
-{% for item in items %}
-            <div class="cart-item" data-item="{{ item.id }}">
-              <div class="row align-items-center">
-              <div class="col-md-2">
-                {% with main_image=item.product.productimage_set.first %}
-                  <div class="card-img-top card-body p-1">
-            <a class="card-img-link" href="{{ item.product.get_absolute_url }}">
-      <img class="card-img-top img-flex" src="{{ main_image.photo.url }}">
-    </a>
-        </div>
-                  {% endwith %}
-              </div>
-              <div class="col-md-2 d-flex justify-content-center d-md-none d-lg-block">
-                <a class="custom-link" href="{{ item.product.get_absolute_url }}">
-            <h5 class="fw-bolder">{{ item.product.name }}</h5>
-            </a>
-              </div>
-                  <div class="col-md-2 d-flex justify-content-center d-none d-sm-none d-md-block d-lg-none">
-                <a class="custom-link" href="{{ item.product.get_absolute_url }}">
-            <p class="">{{ item.product.name }}</p>
-            </a>
-              </div>
-
-              <div class="col-md-2 d-flex justify-content-center">
-<!-- кнопки изменения количества -->
-
-<div class="def-number-input number-input mt-4 mb-4">
-
-  <button type="button" onclick="updateQuantity({{ item.id }}, -1)" class="minus"></button>
-  <input class="quantity" min="1" name="quantity" value="{{ item.quantity }}" data-item="{{ item.id }}" type="number" readonly>
-  <button type="button" onclick="updateQuantity({{ item.id }}, 1)" class="plus"></button>
-</div>
-
-<!-- -->
-
-              </div>
-
-              <div class="col-md-2 d-flex justify-content-center">
-                  <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Цена:</span>
-                <div>
-                    <p class="lead text-md fw-normal ms-2">{{ item.price }} р.</p>
-                </div>
-              </div>
-
-
-              <div class="col-md-2 d-flex justify-content-center">
-                    <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Сумма:</span>
-                <div>
-                  <p class="lead text-md fw-normal ms-2 total-price" id="total-price-{{ item.id }}">
-                      {{ item.total_price }} р.</p>
-                </div>
-              </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-                <div>
-                    <i class="btn btn-outline-dark bi bi-trash" data-item-id="{{ item.id }}"></i>
-                    <span class="small text-muted mb-4 pb-2 d-block d-sm-block d-md-none">Удалить</span>
-                </div>
-              </div>
-            </div>
-          </div>
-{% endfor %}
-{% endwith %}
-          </div>
-        </div>
-<!-- Список товаров - конец блока-->
-<!-- Сумма - начало блока-->
-        <div class="card mb-5">
-          <div class="card-body p-4">
-
-            <div class="float-end">
-              <p class="mb-0 me-5 d-flex align-items-center">
-                <span class="small text-muted me-2">К оплате:</span>
-                  <span class="lead fw-normal" id="cart-total-amount">{{ cart_total_amount }} р.</span>
-              </p>
-            </div>
-
-          </div>
-        </div>
-<!-- Сумма - конец блока-->
-        <div class="d-flex justify-content-end">
-          <button type="button" class="btn btn-outline-dark flex-shrink-0 me-2" onclick="goBack()">Вернуться в магазин</button>
-            <a class="btn btn-outline-dark flex-shrink-0 {% if cart_count == 0 %} disabled not-allowed" tabindex="-1" {% else %}"{% endif %} id="cart-to-pay" href="{% url 'cart-to-pay' order_id=cart.id %}">Перейти к оплате</a>
-        </div>
-
-      </div>
     </div>
-  </div>
 </section>
 <script src="{% static 'js/update_cart_items.js' %}"></script>
 {% endblock content %}

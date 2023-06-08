@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.urls import reverse
+
 from shop.models import Product
 from django.db import models
 
@@ -30,6 +32,9 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+
+    def get_absolute_url(self):
+        return reverse('order-details', kwargs={'pk': self.pk})
 
 
 class OrderStatus(models.Model):

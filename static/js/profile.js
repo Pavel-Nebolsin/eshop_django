@@ -101,10 +101,3 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('showEmailConfirmedMessage', 'false');
   }
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM загружен');
-  var emailConfirmedMessage = document.querySelector('#EmailConfirmedModal');
-  console.log('Найден элемент:', emailConfirmedMessage);
-  console.log('showEmailConfirmedMessage:', localStorage.getItem('showEmailConfirmedMessage'));
-});

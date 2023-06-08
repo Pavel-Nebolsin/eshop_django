@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.views.generic import DetailView
+
 from shop.models import Product
 from . import urls
 from .models import ProductInOrder, Order, OrderStatus
@@ -41,20 +43,27 @@ def update_quantity(request):
         item_id = int(request.POST.get('item_id'))
         quantity = int(request.POST.get('quantity'))
 
-        cart_item = ProductInOrder.objects.get(id=item_id)
-        cart_item.quantity = quantity
-        cart_item.save()
-        total_price = cart_item.total_price
+        try:
+            cart_item = ProductInOrder.objects.get(id=item_id)
+            cart_item.quantity = quantity
+            cart_item.save()
+            total_price = cart_item.total_price
 
-        return JsonResponse({'success': True, 'total_price': total_price, 'item_id': item_id})
+            return JsonResponse({'success': True, 'total_price': total_price, 'item_id': item_id})
+        except:
+            return JsonResponse({'success': False})
+
 
     return JsonResponse({'success': False})
 
 
-def delete_cart_item(request, item_id):
+def delete_item(request, item_id):
     if request.method == 'POST':
-        cart_item = ProductInOrder.objects.get(id=item_id)
-        cart_item.delete()
+        try:
+            cart_item = ProductInOrder.objects.get(id=item_id)
+            cart_item.delete()
+        except:
+            pass
 
         return JsonResponse({'success': True})
 
@@ -69,3 +78,8 @@ def cart_to_pay(request, order_id):
         return redirect('user-account')
 
     return redirect('cart-view')
+
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = 'order_details.html'
+    context_object_name = 'order'

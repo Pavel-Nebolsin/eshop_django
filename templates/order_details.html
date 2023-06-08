@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Страница пользователя {{user.username}} {% endblock title %}
+{% block content %}
+<!-- Product section-->
+<section class="py-5">
+    <div class="container px-5 px-lg-12 my-5">
+        <div>
+            <h1 class="display-5 fw-bolder">Личный кабинет</h1>
+
+            <div class="container mt-5">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link" id="nav-user-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-user-profile" type="button" role="tab"
+                                aria-controls="nav-user-profile"
+                                aria-selected="true"
+                                onclick="location.href='{% url 'user-account' %}'">Профиль
+                        </button>
+                        <button class="nav-link  active" id="nav-orders-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-orders"
+                                type="button" role="tab" aria-controls="nav-orders" aria-selected="false"
+                                onclick="location.href='{% url 'user-account-orders' %}'">Заказы
+                        </button>
+                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Контакт
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- ПРОФИЛЬ -->
+                    <div class="tab-pane fade" id="nav-user-profile" role="tabpanel"
+                         aria-labelledby="nav-user-profile-tab">
+                    </div>
+                    <!-- ЗАКАЗЫ -->
+                    <div class="tab-pane mt-3 fade show active" id="nav-orders" role="tabpanel"
+                         aria-labelledby="nav-orders-tab">
+
+                        <section class="py-5">
+                            <div class="container h-100">
+                                <div class="row d-flex justify-content-center align-items-center h-100">
+                                    <div class="col">
+
+
+                                        <div class="card mb-3">
+                                            <div class="card-body p-4">
+
+                                                <div class="float-start">
+                                                    <p class="mb-0 me-0 d-flex align-items-center">
+                                                    <p><span class="h2">Заказ #{{order.id}}</span></p>
+                                                    </p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!-- Список товаров - начало блока-->
+                                        <div class="card mb-3">
+                                            <div class="card-body p-3">
+                                                <!-- заголовки таблицы -->
+                                                <div class="d-none d-sm-none d-md-block">
+                                                    <div class="row align-items-left">
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <p class="small text-muted mb-4 pb-2">Изображение</p>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <p class="small text-muted mb-4 pb-2">Название</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <p class="small text-muted mb-4 pb-2">Количество</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <p class="small text-muted mb-4 pb-2">Цена</p>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <p class="small text-muted mb-4 pb-2">Сумма</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <p class="small text-muted mb-4 pb-2">Удалить</p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- заголовки таблицы (конец) -->
+                                                {% with items=order.productinorder_set.all %}
+                                                {% for item in items %}
+                                                <div class="cart-item" data-item="{{ item.id }}">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-2">
+                                                            {% with main_image=item.product.productimage_set.first %}
+                                                            <div class="card-img-top card-body p-1">
+                                                                <a class="card-img-link"
+                                                                   href="{{ item.product.get_absolute_url }}">
+                                                                    <img class="card-img-top img-flex"
+                                                                         src="{{ main_image.photo.url }}">
+                                                                </a>
+                                                            </div>
+                                                            {% endwith %}
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center d-md-none d-lg-block">
+                                                            <a class="custom-link"
+                                                               href="{{ item.product.get_absolute_url }}">
+                                                                <h5 class="fw-bolder">{{ item.product.name }}</h5>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center d-none d-sm-none d-md-block d-lg-none">
+                                                            <a class="custom-link"
+                                                               href="{{ item.product.get_absolute_url }}">
+                                                                <p class="">{{ item.product.name }}</p>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <!-- кнопки изменения количества -->
+
+                                                            <div class="def-number-input number-input mt-4 mb-4">
+
+                                                                <button type="button"
+                                                                        onclick="url = '{% url 'update-quantity' %}';updateQuantity({{ item.id }}, -1,url)"
+                                                                        class="minus"></button>
+                                                                <input class="quantity" min="1" name="quantity"
+                                                                       value="{{ item.quantity }}"
+                                                                       data-item="{{ item.id }}" type="number" readonly>
+                                                                <button type="button"
+                                                                        onclick="url = '{% url 'update-quantity' %}'; updateQuantity({{ item.id }}, 1,url)"
+                                                                        class="plus"></button>
+                                                            </div>
+
+                                                            <!-- -->
+
+                                                        </div>
+
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Цена:</span>
+                                                            <div>
+                                                                <p class="lead text-md fw-normal ms-2">{{ item.price }}
+                                                                    р.</p>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <span class="small text-muted ms-0 pb-0 d-block d-sm-block d-md-none ">Сумма:</span>
+                                                            <div>
+                                                                <p class="lead text-md fw-normal ms-2 total-price"
+                                                                   id="total-price-{{ item.id }}">
+                                                                    {{ item.total_price }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 d-flex justify-content-center">
+                                                            <div>
+                                                                <i class="btn btn-outline-dark bi bi-trash"
+                                                                   data-item-id="{{ item.id }}"
+                                                                   data-action-url="{% url 'delete-item' item_id=item.id %}"
+                                                                   data-is-cart="false"></i>
+                                                                <span class="small text-muted mb-4 pb-2 d-block d-sm-block d-md-none">Удалить</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                        <!-- Список товаров - конец блока-->
+                                        <!-- Сумма - начало блока-->
+                                        <div class="card mb-5">
+                                            <div class="card-body p-4">
+
+                                                <div class="float-end">
+                                                    <p class="mb-0 me-5 d-flex align-items-center">
+                                                        <span class="small text-muted me-2">К оплате:</span>
+                                                        <span class="lead fw-normal" id="order-total-amount">{{ order.total_amount }} р.</span>
+                                                    </p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!-- Сумма - конец блока-->
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-outline-dark flex-shrink-0 me-2"
+                                                    onclick="goBack()">Вернуться
+                                            </button>
+                                            <a class="btn btn-outline-dark flex-shrink-0 disabled not-allowed"
+                                               tabindex="-1">Перейти к оплате</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                    <!-- КОНТАКТ -->
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="{% static 'js/update_cart_items.js' %}"></script>
+<script>
+var total = document.getElementById('order-total-amount')
+total.addEventListener('DOMSubtreeModified', function() {
+
+  if (total.textContent === '0') {
+    location.href='{% url 'user-account-orders' %}'
+  }
+});
+</script>
+{% endblock content %}

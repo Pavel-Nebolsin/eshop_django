@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Страница пользователя {{user.username}} {% endblock title %}
+{% block content %}
+<!-- Product section-->
+<section class="py-5">
+    <div class="container px-5 px-lg-12 my-5">
+        <div>
+            <h1 class="display-5 fw-bolder">Личный кабинет</h1>
+
+            <div class="container mt-5">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link" id="nav-user-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-user-profile" type="button" role="tab"
+                                aria-controls="nav-user-profile"
+                                aria-selected="true"
+                                onclick="location.href='{% url 'user-account' %}'">Профиль
+                        </button>
+                        <button class="nav-link  active" id="nav-orders-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-orders"
+                                type="button" role="tab" aria-controls="nav-orders" aria-selected="false"
+                                onclick="location.href='{% url 'user-account-orders' %}'">Заказы
+                        </button>
+                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Контакт
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- ПРОФИЛЬ -->
+                    <div class="tab-pane fade" id="nav-user-profile" role="tabpanel"
+                         aria-labelledby="nav-user-profile-tab">
+                    </div>
+                    <!-- ЗАКАЗЫ -->
+                    <div class="tab-pane mt-3 fade show active" id="nav-orders" role="tabpanel"
+                         aria-labelledby="nav-orders-tab">
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Позиций</th>
+                                <th scope="col">Сумма</th>
+                                <th scope="col">Статус</th>
+                                <th scope="col">Детали</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <th scope="row">{{order.id}}</th>
+                                <td>{{order.productinorder_set.count}}</td>
+                                <td>{{order.total_amount}} р.</td>
+                                <td>{{order.status.name}}</td>
+                                <td><a class="btn btn-outline-dark" href="{{order.get_absolute_url}}">Посмотреть</a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <!-- КОНТАКТ -->
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

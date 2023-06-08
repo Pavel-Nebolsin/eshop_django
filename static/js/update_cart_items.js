@@ -11,25 +11,24 @@ function reduceCartCount() {
 
 
 }
-function updateCartTotalAmount() {
-  var cartItems = document.querySelectorAll('.cart-item');
+function updateOrderTotalAmount() {
+  var ItemsTotal = document.querySelectorAll('.total-price');
   var totalAmount = 0;
 
-  cartItems.forEach(function(item) {
-    var totalPriceElement = item.querySelector('.total-price');
-    var totalPrice = parseInt(totalPriceElement.textContent);
-    totalAmount += totalPrice;
-  });
+ItemsTotal.forEach(function(item) {
+  var totalPrice = parseInt(item.textContent);
+  totalAmount += totalPrice;
+});
 
-  var cartTotalAmountElement = document.getElementById('cart-total-amount');
-  cartTotalAmountElement.textContent = totalAmount + ' р.';
+  var cartTotalAmountElement = document.getElementById('order-total-amount');
+  cartTotalAmountElement.textContent = totalAmount;
 
       if(totalAmount <= 0){
         disablePayButton();
     }
 }
 
-function updateQuantity(itemID, change) {
+function updateQuantity(itemID, change, url) {
   var inputField = document.querySelector(`input[name="quantity"][data-item="${itemID}"]`);
   var newQuantity = parseInt(inputField.value) + change;
   if (newQuantity >= 1) {
@@ -40,7 +39,7 @@ function updateQuantity(itemID, change) {
 
     var csrfToken = getCookie('csrftoken'); // Получение CSRF-токена
 
-    fetch('update-quantity/', {
+    fetch(url, {
       method: 'POST',
       headers: {
       'X-CSRFToken': csrfToken
@@ -55,10 +54,10 @@ function updateQuantity(itemID, change) {
 
           var totalPriceElement = document.querySelector(`#total-price-${itemID}`);
           if (totalPriceElement) {
-            totalPriceElement.textContent = updatedTotalPrice + ' р.';
+            totalPriceElement.textContent = updatedTotalPrice;
           }
         // Обновление общей суммы корзины
-            updateCartTotalAmount()
+            updateOrderTotalAmount()
 
     })
     .catch(error => {
@@ -77,14 +76,16 @@ deleteButtons.forEach(function(button) {
     event.preventDefault();
 
     var itemId = button.getAttribute('data-item-id');
-    deleteItem(itemId);
+    var actionUrl = button.getAttribute('data-action-url');
+    var is_cart = button.getAttribute('data-is-cart');
+    deleteItem(itemId,actionUrl,is_cart);
   });
 });
 
 // Функция для отправки запроса на удаление товара
-function deleteItem(itemId) {
+function deleteItem(itemId,actionUrl,is_cart) {
     var csrfToken = getCookie('csrftoken'); // Получение CSRF-токена
-  fetch('delete-item/' + itemId, {
+  fetch( actionUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -97,10 +98,12 @@ function deleteItem(itemId) {
         // Удалить соотвествующий элемент DOM для удаленного товара
       var cartItem = document.querySelector('.cart-item[data-item="' + itemId + '"]');
       cartItem.remove();
-        // Обновление общей суммы корзины
-            updateCartTotalAmount()
         // Уменьшение цифры количества товаров в корзине в навбаре
+            if(is_cart==='true'){
             reduceCartCount()
+            }
+        // Обновление общей суммы корзины
+            updateOrderTotalAmount()
 
       } else {
         throw new Error('Ошибка при удалении товара');

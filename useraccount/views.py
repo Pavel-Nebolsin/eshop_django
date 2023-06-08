@@ -1,6 +1,9 @@
 from allauth.account.models import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
+
+from order.models import Order
 from .forms import ProfileForm
 
 @login_required
@@ -16,7 +19,6 @@ def user_account_view(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, initial=initial_data)
         if form.is_valid():
-            print(0)
             update_profile(request, initial_data, form.cleaned_data)
             return redirect('user-account')
         else:
@@ -26,6 +28,19 @@ def user_account_view(request):
         form = ProfileForm(initial=initial_data)
 
     return render(request, 'user_account_main.html', {'form': form})
+
+
+class UserOrdersListView(ListView):
+    model = Order
+    template_name = 'user_account_orders.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(status=Order.STATUS_WAITING_FOR_PAYMENT,total_amount__gt=0)
+
+
+
 
 def update_profile(request, initial_data, new_data):
 
@@ -44,6 +59,8 @@ def update_profile(request, initial_data, new_data):
 
     user.save()
     user.profile.save()
+
+
 
 
 def show_form_errors(form):
