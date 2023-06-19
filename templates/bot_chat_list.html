@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Чаты{% endblock title %}
+{% block content %}
+
+
+<section class="py-5">
+    <div class="container h-100">
+        <div class="row d-flex align-items-start h-100">
+            <h1 class="display-5 fw-bolder mt-5">Телеграм чаты {{chat_id}}</h1>
+            <div class="col mt-5">
+                <div class="mb-3">
+                    <div class="card-body p-1 align-items-center">
+
+                        <div class="container w-100>
+                            <div class=" row
+                        ">
+                        <div class="card col-md-auto">
+                            <div class="card-body p-1">
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        Список чатов
+                                    </button>
+                                    {% if chat_id != 0 %} {{selected_chat}} {% endif %}
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <div class="dropdown-menu-content">
+                                            <ul class="list-group">
+
+                                                {% for chat in chats %}
+                                                <p>
+                                                    <a href="{% url 'bot-chat-list' chat_id=chat.chat_id %}"
+                                                        class="text-decoration-none p-1" style="color: black;">
+                                                        {{chat}}
+                                                    </a>
+                                                </p>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card col-md-auto mt-3">
+                            <div class="card-body p-4 overflow-auto" style="max-height: 450px;">
+                                {% if selected_chat_messages %}
+                                {% for message in selected_chat_messages %}
+                                    {% if message.is_admin_reply %}
+                                    <p class="text-end">
+                                        <span class="small text-muted">{{ message.time_create|date:"d F H:i" }}:</span>
+                                        {{message}}
+                                    </p>
+                                    {% else %}
+                                    <p>
+                                        <span class="small text-muted">{{ message.time_create|date:"d F H:i" }}:</span>
+                                        {{message}}
+                                    </p>
+                                    {% endif %}
+
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        <div class="card p-4 col-md-auto mt-3">
+                            <form action="{% url 'bot-chat-list' chat_id=selected_chat.chat_id %}" method="post">
+                            {% csrf_token %}
+                                <label for="{{ form.text.id_for_label }}"
+                                           class="label small text-muted">Сообщение:</label>
+                                <div class="input-group">
+                                    {{ form.text }}
+                                </div>
+                                <button type="submit" class="btn btn-outline-dark mt-3">
+                                    Отправить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</section>
+
+{% endblock content %}

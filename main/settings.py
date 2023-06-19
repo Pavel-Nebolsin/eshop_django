@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-a-$oy9ixg5syk$rlaqlks$@x^&e%p=t-cp^ddf=9!b!t7kd2^+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','f34e-146-70-174-67.ngrok-free.app']
 
 # Application definition
 
@@ -25,11 +25,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django.contrib.sites',
     'authentication',
     'useraccount',
     'shop',
     'order',
+    'widget_tweaks',
+    'bot',
     # allauth apps
     'allauth',
     'allauth.account',

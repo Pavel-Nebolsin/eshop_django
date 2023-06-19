@@ -8,8 +8,11 @@ from django.contrib import messages
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect
 from order.models import Order
-from allauth.account.views import LoginView, SignupView, ConfirmEmailView
+from allauth.account.views import LoginView, SignupView, ConfirmEmailView, PasswordSetView
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from allauth.account.views import PasswordChangeView
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 
 
 def register_view(request):
@@ -142,6 +145,14 @@ def email_confirm_view(request, user_id):
             return JsonResponse({'success': False, 'errors': 'E-mail not found'}, status=400)
     else:
         raise Http404("Page not found")
+
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    success_url = reverse_lazy("user-account")
+
+class CustomPasswordSetView(PasswordSetView):
+    success_url = reverse_lazy("user-account")
 
 
 def set_cart_to_user(cart_id, user):

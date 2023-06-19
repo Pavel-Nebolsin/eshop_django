@@ -2,9 +2,9 @@
 <div class="card h-100">
     {% with main_image=item.productimage_set.first %}
     <!-- Product image-->
-    <div class="card-img-top card-body p-1">
+    <div class="p-1">
             <a class="card-img-link" href="{{ item.get_absolute_url }}">
-      <img class="card-img-top img-flex" src="{{ main_image.photo.url }}">
+      <img class="card-img-top img-flex" src="{{ main_image.photo.url }}" style="height: 200px; weight: auto;">
     </a>
         </div>
     {% endwith %}

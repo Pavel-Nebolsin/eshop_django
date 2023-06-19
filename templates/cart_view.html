@@ -70,12 +70,12 @@
                                         <a class="card-img-link"
                                            href="{{ item.product.get_absolute_url }}">
                                             <img class="card-img-top img-flex"
-                                                 src="{{ main_image.photo.url }}">
+                                                 src="{{ main_image.photo.url }}" style="height: 130px; weight: auto;">
                                         </a>
                                     </div>
                                     {% endwith %}
                                 </div>
-                                <div class="col-md-2 d-flex justify-content-center d-md-none d-lg-block">
+                                <div class="col-md-2 d-flex justify-content-center d-md-none d-lg-block text-center">
                                     <a class="custom-link"
                                        href="{{ item.product.get_absolute_url }}">
                                         <h5 class="fw-bolder">{{ item.product.name }}</h5>

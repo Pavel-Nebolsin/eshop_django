@@ -10993,3 +10993,6 @@ input[disabled], textarea[disabled] {
 
 }
 
+.nav-link{
+    color: black !important;
+}

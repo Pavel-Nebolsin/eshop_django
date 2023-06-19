@@ -75,9 +75,9 @@ def cart_to_pay(request, order_id):
         order_to_pay = Order.objects.get(id=order_id)
         order_to_pay.status_id = Order.STATUS_WAITING_FOR_PAYMENT
         order_to_pay.save()
-        return redirect('user-account')
+        return redirect('user-account-orders')
+    return redirect('index')
 
-    return redirect('cart-view')
 
 class OrderDetailView(DetailView):
     model = Order

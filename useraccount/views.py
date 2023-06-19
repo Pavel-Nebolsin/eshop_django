@@ -1,10 +1,16 @@
-from allauth.account.models import EmailAddress
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
+from django.dispatch import receiver
+from allauth.account.signals import password_set, password_changed
 
 from order.models import Order
 from .forms import ProfileForm
+def user_contact_view(request):
+    return render(request, 'user_account_contact.html',
+                 # {'form': form}
+                  )
+
 
 @login_required
 def user_account_view(request):
@@ -37,7 +43,8 @@ class UserOrdersListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(status=Order.STATUS_WAITING_FOR_PAYMENT,total_amount__gt=0)
+        user = self.request.user
+        return queryset.filter(user=user,status=Order.STATUS_WAITING_FOR_PAYMENT,total_amount__gt=0)
 
 
 
@@ -59,9 +66,6 @@ def update_profile(request, initial_data, new_data):
 
     user.save()
     user.profile.save()
-
-
-
 
 def show_form_errors(form):
     for field_name, field in form.fields.items():

@@ -10,7 +10,8 @@
                 <!-- карусель-->
                 <div id="productImg" class="" data-bs-ride="">
                        {% with img=item.productimage_set.first %}
-                       <img class="card-img-top img-flex" src="{{ img.photo.url }}">
+                       <img class="card-img-top img-flex" src="{{ img.photo.url }}"
+                       style="height: 350px; weight: auto;">
                     {% endwith %}
                 </div>
             </div>
@@ -18,7 +19,6 @@
                 <div class="small mb-1">SKU: 1020{{item.id}}</div>
                 <h1 class="display-5 fw-bolder">{{item.name}}</h1>
                 <div class="fs-5 mb-5 mt-5">
-<!--                    <span class="text-decoration-line-through">{{item.price}} р.</span>-->
                     <span>{{item.price}} р.</span>
                 </div>
 

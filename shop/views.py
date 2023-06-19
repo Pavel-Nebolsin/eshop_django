@@ -1,17 +1,20 @@
 from django.shortcuts import render
+from django.views.generic import DetailView, ListView
+
 from shop.models import Product, Category
 
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product_details.html'
+    context_object_name = 'item'
 
-def product_details(request, slug):
-    item = Product.objects.get(slug=slug)
-    context = {
-        'item': item,
-    }
-    return render(request, 'product_details.html', context)
 
-def sort_by_category(request, category_slug):
-    items = Category.objects.get(slug=category_slug).product_set.all()
-    context = {
-        'items': items,
-    }
-    return render(request, 'index.html', context)
+class ProductsListView(ListView):
+    model = Product
+    template_name = 'index.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        slug = self.kwargs.get('slug')
+        return queryset.filter(category__slug=slug)
