@@ -5,9 +5,13 @@ function submitLoginForm(event) {
   const form = document.getElementById('loginForm');
   const formData = new FormData(form);
   const actionUrl = form.getAttribute('data-action-url')
+  var csrfToken = getCookie('csrftoken'); // Получение CSRF-токена
 
   fetch(actionUrl, {
     method: 'POST',
+    headers: {
+      'X-CSRFToken': csrfToken
+        },
     body: formData
   })
     .then(response => {

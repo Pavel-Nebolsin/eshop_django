@@ -23,8 +23,8 @@ def send_reply(chat_id,text):
 
 
 def process_msg_data(update):
-    print(update)
     message = update['message']
+    print(message)
     if "first_name" in message["from"]:
         first_name = message["from"]["first_name"]
     else:

@@ -1,7 +1,14 @@
+import requests
 
-webhook_url = 'https://api.telegram.org/bot5774654090:AAFq4w59KOhKlDeQ353g6zZUiPafK3dyrPI/setWebhook?url=https://f34e-146-70-174-67.ngrok-free.app/bot/'
-bot_token = '5774654090:AAFq4w59KOhKlDeQ353g6zZUiPafK3dyrPI'
+from main import settings
+
+webhook_url = settings.EXTERNAL_DOMAIN +'/bot/'
 
 
 
+set_webhook_api = f"https://api.telegram.org/bot{settings.TELEGRAM_API_TOKEN}/setWebhook"
+
+print(f"Setting webhook url {webhook_url}")
+
+requests.post(set_webhook_api, data={"url": webhook_url})
 

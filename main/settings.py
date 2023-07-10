@@ -9,12 +9,13 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-a-$oy9ixg5syk$rlaqlks$@x^&e%p=t-cp^ddf=9!b!t7kd2^+'
+SECRET_KEY = '$oy9ixg5syk$rlaqlks$@x^&e%p=t-cp^ddf=9!b!t7kd2^+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','f34e-146-70-174-67.ngrok-free.app']
+EXTERNAL_DOMAIN = 'https://efd5-146-70-202-85.ngrok-free.app'
+ALLOWED_HOSTS = ['127.0.0.1', EXTERNAL_DOMAIN.split('//')[1]]
 
 # Application definition
 
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
+    'corsheaders',
     'authentication',
     'useraccount',
     'shop',
@@ -44,7 +46,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,6 +86,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -136,7 +141,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Ключ сеанса
 SESSION_COOKIE_NAME = 'sessionid'  # Имя cookie для хранения сеансового ключа
-SESSION_COOKIE_AGE = 86400  # Время жизни сеансового cookie в секундах (здесь 1 день)
+SESSION_COOKIE_AGE = 86400*7  # Время жизни сеансового cookie в секундах (здесь 7 дней)
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -192,3 +197,14 @@ SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+    EXTERNAL_DOMAIN,
+    'http://127.0.0.1'
+]
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [EXTERNAL_DOMAIN]
+
+TELEGRAM_API_TOKEN = '5774654090:AAFq4w59KOhKlDeQ353g6zZUiPafK3dyrPI'
