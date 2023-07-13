@@ -14,7 +14,7 @@ SECRET_KEY = '$oy9ixg5syk$rlaqlks$@x^&e%p=t-cp^ddf=9!b!t7kd2^+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-EXTERNAL_DOMAIN = 'https://efd5-146-70-202-85.ngrok-free.app'
+EXTERNAL_DOMAIN = 'https://mydomain.ru'
 ALLOWED_HOSTS = ['127.0.0.1', EXTERNAL_DOMAIN.split('//')[1]]
 
 # Application definition
@@ -188,8 +188,8 @@ SOCIALACCOUNT_EMAIL_REQUIRED = False
 ### EMAIL SENDING SETTINGS ###
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "ldrimanez@gmail.com"
-EMAIL_HOST_PASSWORD = "avlwuzgxusbxsgol"
+EMAIL_HOST_USER = "myemail@gmail.com"
+EMAIL_HOST_PASSWORD = "password"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -207,4 +207,4 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [EXTERNAL_DOMAIN]
 
-TELEGRAM_API_TOKEN = '5774654090:AAFq4w59KOhKlDeQ353g6zZUiPafK3dyrPI'
+TELEGRAM_API_TOKEN = 'mytoken'
